@@ -20,10 +20,11 @@ class CertbotYandexDns
         //
     }
 
-    public function renewCerts(string $configAbsolutePath, string $logAbsolutePath = ''): bool
+    public function renewCerts(string $configAbsolutePath, string $logAbsolutePath = '', bool $isQuiet = false): bool
     {
 
         DebugLib::SO()->logFile = $logAbsolutePath;
+        DebugLib::SO()->isQuiet = $isQuiet;
         DebugLib::SO()->dump($configAbsolutePath);
         DebugLib::SO()->ld($configAbsolutePath);
 

@@ -3,3 +3,5 @@ download_FROM_SERVER.bat
 settings.ini
 vendor
 *.log
+index.php
+!*/index.php
