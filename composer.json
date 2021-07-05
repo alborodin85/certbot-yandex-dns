@@ -1,0 +1,26 @@
+{
+    "name": "it5/test-study",
+    "description": "Первый тестовый проект для публикации",
+    "keywords": ["тестовый", "пробовать"],
+    "homepage": "https://github.com/alborodin85/certbot-yandex-dns",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Borodin",
+            "email": "alborodin85@mail.ru"
+        }
+    ],
+    "support": {
+        "email": "alborodin85@mail.ru"
+    },
+    "autoload": {
+        "psr-4": {
+            "It5\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.0.0",
+        "monolog/monolog": "*",
+        "psy/psysh": "*"
+    }
+}
