@@ -1,0 +1,23 @@
+[
+    {
+        "domain": "it5.su",
+        "subDomains": [
+            "it5.su",
+            "*.it5.su"
+        ],
+        "adminEmail": "admin@it5.su",
+        "yandexToken": "jkdfjkjkhjksdfjkgjksdfjkgf",
+        "dryRun": true,
+        "dnsParameterName": "_acme-challenge",
+        "criticalRemainingDays": 7,
+        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem"
+    },
+    {
+        "domain": "it5.team",
+        "subDomains": [
+            "it5.team",
+            "*.it5.team"
+        ],
+        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem"
+    }
+]
