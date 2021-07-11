@@ -1,7 +1,10 @@
 .idea/
 download_FROM_SERVER.bat
 settings.ini
+settings.json
 vendor
 *.log
 index.php
 !*/index.php
+domains-settings
+.phpunit.result.cache

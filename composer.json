@@ -15,12 +15,15 @@
     },
     "autoload": {
         "psr-4": {
-            "It5\\": "src/"
+            "It5\\": ["src"],
+            "It5Tests\\": ["tests"],
+            "\\": ["tests"]
         }
     },
     "require": {
         "php": ">=8.0.0",
         "monolog/monolog": "*",
-        "psy/psysh": "*"
+        "psy/psysh": "*",
+        "phpunit/phpunit": "^9"
     }
 }
