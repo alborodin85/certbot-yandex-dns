@@ -3,6 +3,7 @@
 namespace CertUpdateSteps\CertbotDialog;
 
 use It5\Adapters\CertbotDialog\CommandBuilder;
+use It5\Adapters\HttpRequestExecutor\HttpRequestExecutorError;
 use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
 use PHPUnit\Framework\TestCase;
@@ -57,6 +58,10 @@ Before continuing, verify the record is deployed.';
         $dnsParamName = $this->commandBuilder->retrieveDnsParameterName($stringFromCertbotCli, $parameters);
 
         $this->assertEquals('_acme-challenge.admin24-ady', $dnsParamName);
+
+        $this->expectExceptionMessage('Из диалога с CertBot не удалось извлечь имя dns-параметра!');
+        $stringFromCertbotCli = 'vasa';
+        $this->commandBuilder->retrieveDnsParameterName($stringFromCertbotCli, $parameters);
     }
 
     public function testRetrieveDnsParameterValue()
@@ -73,5 +78,22 @@ Before continuing, verify the record is deployed.';
         $dnsParamValue = $this->commandBuilder->retrieveDnsParameterValue($stringFromCertbotCli, $dnsParamName);
 
         $this->assertEquals('if98_xfXE6a6QjruUPK4x6S15PuwKGtRshmEOgC-OFE', $dnsParamValue);
+
+        $this->expectExceptionMessage('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
+        $stringFromCertbotCli = 'vasa';
+        $this->commandBuilder->retrieveDnsParameterValue($stringFromCertbotCli, $dnsParamName);
+    }
+
+    public function testNotCorrectError()
+    {
+        $stringFromCertbotCli = '- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Please deploy a DNS TXT record under the name
+_acme-challenge.admin24-ady.it5_test2.team with the following value:
+
+Before continuing, verify the record is deployed.';
+
+        $dnsParamName = '_acme-challenge.admin24-ady';
+        $this->expectExceptionMessage('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
+        $this->commandBuilder->retrieveDnsParameterValue($stringFromCertbotCli, $dnsParamName);
     }
 }

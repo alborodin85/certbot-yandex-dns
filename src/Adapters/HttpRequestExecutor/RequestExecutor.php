@@ -2,7 +2,7 @@
 
 namespace It5\Adapters\HttpRequestExecutor;
 
-use It5\DebugLibs\DebugLib;
+use It5\Localization\Trans;
 use JetBrains\PhpStorm\ArrayShape;
 
 class RequestExecutor
@@ -11,6 +11,11 @@ class RequestExecutor
     const METHOD_POST = 'POST';
     const METHOD_DELETE = 'DELETE';
     const METHOD_PATCH = 'PATCH';
+
+    public function __construct()
+    {
+        Trans::instance()->init(__DIR__ . '/localization/ru.php');
+    }
 
     /** Делает запрос с GET-параметрами (GET, DELETE, PATCH). Возвращает сырую строку */
     public function makeUrlRequest(string $url, string $method, array $parameters, array $headers): string
@@ -80,10 +85,10 @@ class RequestExecutor
     ): array {
         try {
             if (!filetype($fileAbsolutePath)) {
-                throw new CurlShellError(Ru::get('errors.file_not_exists'));
+                throw new HttpRequestExecutorError(Trans::T('errors.file_not_exists'));
             }
-        } catch (\Throwable $ex) {
-            throw new CurlShellError(Ru::get('errors.file_access_errors', $fileAbsolutePath));
+        } catch (\Throwable) {
+            throw new HttpRequestExecutorError(Trans::T('errors.file_access_errors', $fileAbsolutePath));
         }
         if (!$fileDisplayName) {
             $fileDisplayName = basename($fileAbsolutePath);

@@ -2,6 +2,7 @@
 
 namespace HttpRequestExecutor;
 
+use It5\Adapters\HttpRequestExecutor\HttpRequestExecutorError;
 use It5\CurlShell\CurlShellError;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
@@ -82,7 +83,7 @@ class RequestExecutorTest extends TestCase
         $this->assertStringContainsString('test-file.txt', $result);
         $this->assertStringContainsString('form-data; boundary', $result);
 
-        $this->expectException(CurlShellError::class);
+        $this->expectException(HttpRequestExecutorError::class);
         $result = $this->executor->sendFile(
             $url, $method, $parameters, $headers, '', 'text-file.txt', ''
         );
