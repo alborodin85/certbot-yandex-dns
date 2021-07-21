@@ -1,6 +1,6 @@
 <?php
 
-namespace CurlShell;
+namespace HttpRequestExecutor;
 
 use It5\CurlShell\CurlShellError;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
