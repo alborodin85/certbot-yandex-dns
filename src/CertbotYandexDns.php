@@ -2,7 +2,7 @@
 
 namespace It5;
 
-use It5\CertUpdateSteps\CertbotDialog\CertbotDialog;
+use It5\Adapters\CertbotDialog\CertbotDialog;
 use It5\CertUpdateSteps\CheckCertDeadline\CertDeadlineChecker;
 use It5\ParametersParser\CliParametersRegistry;
 use It5\ParametersParser\DomainParametersDto;

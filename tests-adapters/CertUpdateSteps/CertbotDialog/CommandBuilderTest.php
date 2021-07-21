@@ -2,7 +2,7 @@
 
 namespace CertUpdateSteps\CertbotDialog;
 
-use It5\CertUpdateSteps\CertbotDialog\CommandBuilder;
+use It5\Adapters\CertbotDialog\CommandBuilder;
 use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
 use PHPUnit\Framework\TestCase;

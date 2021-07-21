@@ -1,6 +1,6 @@
 <?php
 
-namespace It5\CertUpdateSteps\CertbotDialog;
+namespace It5\Adapters\CertbotDialog;
 
 use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;

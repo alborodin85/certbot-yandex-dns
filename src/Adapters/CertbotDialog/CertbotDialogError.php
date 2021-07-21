@@ -1,6 +1,6 @@
 <?php
 
-namespace It5\CertUpdateSteps\CertbotDialog;
+namespace It5\Adapters\CertbotDialog;
 
 use JetBrains\PhpStorm\Pure;
 use Throwable;
