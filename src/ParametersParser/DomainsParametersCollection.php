@@ -3,7 +3,7 @@
 namespace It5\ParametersParser;
 
 use JetBrains\PhpStorm\Pure;
-use It5\CurlShell\Ru;
+use It5\Localization\Ru;
 
 class DomainsParametersCollection implements \Iterator, \ArrayAccess, \Countable
 {

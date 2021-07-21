@@ -39,6 +39,7 @@ class CertbotYandexDns
     ) {
         $this->initConfigs();
         $this->certDeadlineChecker = new CertDeadlineChecker();
+
         $this->yandexDnsApi = new YandexDnsApi();
         $this->certbotDialog = new CertbotDialog();
     }
@@ -100,6 +101,7 @@ class CertbotYandexDns
 
         // Закончить диалог с CertBot
         $this->certbotDialog->closeDialog($dialogDto);
+
         // Вывести результат
     }
 

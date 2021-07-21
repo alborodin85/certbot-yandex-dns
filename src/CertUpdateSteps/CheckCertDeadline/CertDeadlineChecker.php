@@ -3,7 +3,7 @@
 namespace It5\CertUpdateSteps\CheckCertDeadline;
 
 use It5\DebugLibs\DebugLib;
-use It5\CurlShell\Ru;
+use It5\Localization\Ru;
 
 class CertDeadlineChecker
 {

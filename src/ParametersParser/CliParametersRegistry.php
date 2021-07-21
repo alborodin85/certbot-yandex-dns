@@ -2,7 +2,7 @@
 
 namespace It5\ParametersParser;
 
-use It5\CurlShell\Ru;
+use It5\Localization\Ru;
 
 class CliParametersRegistry
 {

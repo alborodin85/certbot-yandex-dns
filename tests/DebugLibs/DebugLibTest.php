@@ -39,6 +39,7 @@ class DebugLibTest extends TestCase
         $logContent = file_get_contents($this->logFile);
         $result = str_contains($logContent, $this->message);
         $this->assertTrue($result);
+
         ob_start();
         $result = DebugLib::dump($this->message);
         ob_end_clean();

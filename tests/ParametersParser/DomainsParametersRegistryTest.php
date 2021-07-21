@@ -5,7 +5,7 @@ namespace ParametersParser;
 use It5\ParametersParser\DomainParametersDto;
 use It5\ParametersParser\DomainsParametersCollection;
 use It5\ParametersParser\DomainsParametersRegistry;
-use It5\CurlShell\Ru;
+use It5\Localization\Ru;
 use PHPUnit\Framework\TestCase;
 
 class DomainsParametersRegistryTest extends TestCase
