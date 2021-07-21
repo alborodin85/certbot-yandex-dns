@@ -9,7 +9,7 @@ use It5\ParametersParser\DomainParametersDto;
 use It5\ParametersParser\DomainsParametersRegistry;
 use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
-use It5\YandexApi\YandexDnsApi;
+use It5\Adapters\YandexApi\YandexDnsApi;
 
 class CertbotYandexDns
 {

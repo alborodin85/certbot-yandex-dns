@@ -1,10 +1,9 @@
 <?php
 
-namespace It5\YandexApi;
+namespace It5\Adapters\YandexApi;
 
 use It5\CurlShell\HttpRequestWrapper;
 use It5\CurlShell\RequestExecutor;
-use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
 
@@ -55,8 +54,6 @@ class YandexDnsApi
         ];
         $headers = ['PddToken' => $token];
         $rawRecord = HttpRequestWrapper::response($url, $method, $parameters, $headers);
-
-        DebugLib::dump($rawRecord);
 
         $rawRecord = $rawRecord->arBody['record'] ?? false;
 

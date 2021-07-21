@@ -8,7 +8,7 @@ use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
-use It5\YandexApi\YandexDnsApi;
+use It5\Adapters\YandexApi\YandexDnsApi;
 use PHPUnit\Framework\TestCase;
 
 /**

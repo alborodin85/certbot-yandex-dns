@@ -3,7 +3,7 @@
 use It5\CertbotYandexDns;
 use PHPUnit\Framework\TestCase;
 use It5\CertUpdateSteps\CheckCertDeadline\CertDeadlineChecker;
-use It5\YandexApi\YandexDnsApi;
+use It5\Adapters\YandexApi\YandexDnsApi;
 
 class CertbotYandexDnsTest extends TestCase
 {
