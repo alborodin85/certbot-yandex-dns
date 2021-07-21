@@ -1,6 +1,6 @@
 <?php
 
-namespace It5\CurlShell;
+namespace It5\Adapters\HttpRequestExecutor;
 
 use It5\DebugLibs\DebugLib;
 use JetBrains\PhpStorm\ArrayShape;

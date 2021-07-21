@@ -3,7 +3,7 @@
 namespace CurlShell;
 
 use It5\CurlShell\CurlShellError;
-use It5\CurlShell\RequestExecutor;
+use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
 use PHPUnit\Framework\TestCase;
 

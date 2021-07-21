@@ -3,7 +3,7 @@
 namespace YandexApi;
 
 use It5\CurlShell\HttpRequestWrapper;
-use It5\CurlShell\RequestExecutor;
+use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
