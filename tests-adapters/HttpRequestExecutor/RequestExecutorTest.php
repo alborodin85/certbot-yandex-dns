@@ -7,7 +7,6 @@ use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
 use PHPUnit\Framework\TestCase;
 
-// TODO: Протестить передачу файлов
 class RequestExecutorTest extends TestCase
 {
     const TEST_HOST = 'https://test-host.it5.su';
