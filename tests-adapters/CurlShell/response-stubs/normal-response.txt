@@ -1,0 +1,51 @@
+HTTP/1.1 200 OK
+Date: Mon, 12 Jul 2021 20:12:10 GMT
+Server: Apache
+Vary: Accept-Encoding
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+
+{
+    "get": {
+        "test-parameter-name": "test-parameter-value"
+    },
+    "post": [],
+    "request": {
+        "test-parameter-name": "test-parameter-value"
+    },
+    "headers": {
+        "Host": "test-host.it5.su",
+        "Accept": "*\\/*",
+        "test-header-name": "test-header-value"
+    },
+    "server": {
+        "HTTPS": "on",
+        "SSL_TLS_SNI": "test-host.it5.su",
+        "HTTP_HOST": "test-host.it5.su",
+        "HTTP_ACCEPT": "*\\/*",
+        "HTTP_TEST_HEADER_NAME": "test-header-value",
+        "PATH": "\\/usr\\/local\\/sbin:\\/usr\\/local\\/bin:\\/usr\\/sbin:\\/usr\\/bin:\\/sbin:\\/bin",
+        "SERVER_SIGNATURE": "",
+        "SERVER_SOFTWARE": "Apache",
+        "SERVER_NAME": "test-host.it5.su",
+        "SERVER_ADDR": "192.168.1.2",
+        "SERVER_PORT": "443",
+        "REMOTE_ADDR": "185.97.200.104",
+        "DOCUMENT_ROOT": "\\/home\\/common-services\\/sites\\/test-host.it5.su\\/public_html",
+        "REQUEST_SCHEME": "https",
+        "CONTEXT_PREFIX": "",
+        "CONTEXT_DOCUMENT_ROOT": "\\/home\\/common-services\\/sites\\/test-host.it5.su\\/public_html",
+        "SERVER_ADMIN": "alborodin85@mail.ru",
+        "SCRIPT_FILENAME": "\\/home\\/common-services\\/sites\\/test-host.it5.su\\/public_html\\/CurlShell\\/RequestExecutorTest\\/index.php",
+        "REMOTE_PORT": "37608",
+        "GATEWAY_INTERFACE": "CGI\\/1.1",
+        "SERVER_PROTOCOL": "HTTP\\/1.1",
+        "REQUEST_METHOD": "GET",
+        "QUERY_STRING": "test-parameter-name=test-parameter-value",
+        "REQUEST_URI": "\\/CurlShell\\/RequestExecutorTest\\/?test-parameter-name=test-parameter-value",
+        "SCRIPT_NAME": "\\/CurlShell\\/RequestExecutorTest\\/index.php",
+        "PHP_SELF": "\\/CurlShell\\/RequestExecutorTest\\/index.php",
+        "REQUEST_TIME_FLOAT": 1626120730.336,
+        "REQUEST_TIME": 1626120730
+    }
+}
