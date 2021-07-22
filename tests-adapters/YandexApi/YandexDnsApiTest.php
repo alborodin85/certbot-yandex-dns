@@ -5,6 +5,7 @@ namespace YandexApi;
 use It5\CurlShell\HttpRequestWrapper;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
+use It5\Env;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
@@ -37,7 +38,7 @@ class YandexDnsApiTest extends TestCase
         $this->testType = DnsRecordTypesEnum::TXT;
         $this->testTtl = 21600;
         $this->testContent = 'test_content';
-        $this->yandexShell = new YandexDnsApi();
+        $this->yandexShell = new YandexDnsApi(Env::env()->yandexApiDelayMicroseconds);
 
         $requestExecutor = new RequestExecutor();
         HttpRequestWrapper::instance()->replaceExecutor($requestExecutor);

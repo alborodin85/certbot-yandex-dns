@@ -24,9 +24,10 @@ class CertbotYandexDns
         array $cliArgv,
         string $configAbsolutePath,
         string $logAbsolutePath,
+        int $delayMicroseconds,
     ): self {
         if (empty(self::$selfInstance)) {
-            self::$selfInstance = new self($cliArgv, $configAbsolutePath, $logAbsolutePath);
+            self::$selfInstance = new self($cliArgv, $configAbsolutePath, $logAbsolutePath, $delayMicroseconds);
         }
 
         return self::$selfInstance;
@@ -36,11 +37,11 @@ class CertbotYandexDns
         private $cliArgv,
         private string $configAbsolutePath,
         private string $logAbsolutePath,
+        private int $delayMicroseconds,
     ) {
         $this->initConfigs();
         $this->certDeadlineChecker = new CertDeadlineChecker();
-
-        $this->yandexDnsApi = new YandexDnsApi();
+        $this->yandexDnsApi = new YandexDnsApi($this->delayMicroseconds);
         $this->certbotDialog = new CertbotDialog();
     }
 
@@ -89,7 +90,6 @@ class CertbotYandexDns
         // Создать в зоне требуемые параметры
         foreach ($arDnsRecords as $arRecord) {
             foreach ($arRecord as $subDomain => $recordText) {
-                usleep(1*1000*1000);
                 $this->yandexDnsApi->create(
                     $domainDto->domain, $domainDto->yandexToken, DnsRecordTypesEnum::TXT, $subDomain, $recordText
                 );

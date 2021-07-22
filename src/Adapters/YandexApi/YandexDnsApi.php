@@ -9,6 +9,10 @@ use It5\SystemDnsShell\DnsRecordsCollection;
 
 class YandexDnsApi
 {
+    public function __construct(
+        private int $delayMicroseconds,
+    ) { }
+
     public function getAll(string $domain, string $token): DnsRecordsCollection
     {
         $result = new DnsRecordsCollection();
@@ -17,7 +21,7 @@ class YandexDnsApi
         $method = RequestExecutor::METHOD_GET;
         $parameters = ['domain' => $domain];
         $headers = ['PddToken' => $token];
-        $records = HttpRequestWrapper::response($url, $method, $parameters, $headers);
+        $records = $this->makeRequest($url, $method, $parameters, $headers);
 
         $arRecords = $records->arBody['records'] ?? [];
 
@@ -53,7 +57,7 @@ class YandexDnsApi
             'subdomain' => $subdomain,
         ];
         $headers = ['PddToken' => $token];
-        $rawRecord = HttpRequestWrapper::response($url, $method, $parameters, $headers);
+        $rawRecord = $this->makeRequest($url, $method, $parameters, $headers);
 
         $rawRecord = $rawRecord->arBody['record'] ?? false;
 
@@ -74,9 +78,17 @@ class YandexDnsApi
             $method = RequestExecutor::METHOD_POST;
             $parameters = ['domain' => $domain, 'record_id' => $recordDto->record_id];
             $headers = ['PddToken' => $token];
-            HttpRequestWrapper::response($url, $method, $parameters, $headers);
+            $this->makeRequest($url, $method, $parameters, $headers);
         }
 
         return count($recordsForDeleting);
+    }
+
+    private function makeRequest(string $url, string $method, array $parameters, array $headers): HttpRequestWrapper
+    {
+        usleep($this->delayMicroseconds);
+        $rawRecord = HttpRequestWrapper::response($url, $method, $parameters, $headers);
+
+        return $rawRecord;
     }
 }
