@@ -26,13 +26,13 @@ class SystemDnsShell
     {
 
     }
+
     public function waitingOneParameter(DnsRecordDto $recordDto): bool
     {
         $result = false;
         $startTime = time();
 
         $currentParameterValue = '';
-
         while ($currentParameterValue != $recordDto->content) {
             if (time() > $startTime + $this->maxWaitingSpreadingSeconds) {
                 break;
@@ -65,9 +65,12 @@ class SystemDnsShell
         string $dnsServerIp = ''
     ): DnsRecordsCollection {
         $recordsCollection = new DnsRecordsCollection();
-        $fullDomain = $subdomain . '.' . $domain . '.';
+        $fullDomain = $domain;
+        if ($subdomain != '@') {
+            $fullDomain = $subdomain . '.' . $domain . '.';
+        }
         $type = mb_strtolower($type);
-        $command = "dig {$fullDomain} {$type} +noall +answer";
+        $command = "dig +nocmd {$fullDomain} {$type} +noall +answer";
         if ($dnsServerIp) {
             $command .= " @{$dnsServerIp}";
         }
@@ -75,15 +78,20 @@ class SystemDnsShell
 
         $recordId = 1;
         foreach ($commandResult as $strRecord) {
+            $spaceSubs = '##SP##';
+            $strRecord = preg_replace('/\"(.*?)\s(.*?)\"/miu', "$1{$spaceSubs}$2", $strRecord);
             $arRecord = preg_split('/\s/', $strRecord);
-            DebugLib::dump($arRecord);
+            $arRecord = array_filter($arRecord, fn($item) => !!$item);
+            $arRecord = array_values($arRecord);
+            $content = $arRecord[4];
+            $content = str_replace($spaceSubs, " ", $content);
             $recordObj = new DnsRecordDto(
                 record_id: $recordId,
                 domain: $domain,
                 subdomain: $subdomain,
                 fqdn: $fullDomain,
                 type: trim($arRecord[3]),
-                content: trim(str_replace('"', '', $arRecord[4])),
+                content: $content,
                 priority: 1,
                 ttl: trim($arRecord[2]),
             );
