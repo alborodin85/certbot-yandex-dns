@@ -91,7 +91,7 @@ class CertbotYandexDns
         foreach ($arDnsRecords as $arRecord) {
             foreach ($arRecord as $subDomain => $recordText) {
                 $this->yandexDnsApi->create(
-                    $domainDto->domain, $domainDto->yandexToken, DnsRecordTypesEnum::TXT, $subDomain, $recordText
+                    $domainDto->domain, $domainDto->yandexToken, $subDomain, DnsRecordTypesEnum::TXT, $recordText
                 );
             }
         }

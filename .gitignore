@@ -2,6 +2,7 @@
 download_FROM_SERVER.bat
 settings.ini
 settings.json
+*/settings.json
 settings-back.json
 vendor
 dev-folder

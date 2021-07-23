@@ -27,7 +27,6 @@ class CliCommandExecutor
         }
         $commandResult = [];
         $return_var = 0;
-        DebugLib::dump($command);
         exec($command, $commandResult, $return_var);
 
         if ($return_var) {

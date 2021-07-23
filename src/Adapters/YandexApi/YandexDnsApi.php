@@ -34,7 +34,7 @@ class YandexDnsApi
     }
 
     public function create(
-        string $domain, string $token, string $type, string $subdomain, string $content, ...$any
+        string $domain, string $token, string $subdomain, string $type, string $content, ...$any
     ): DnsRecordDto {
         $parameters = [
             'domain' => '',

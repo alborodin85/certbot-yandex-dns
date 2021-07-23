@@ -16,8 +16,10 @@ class DebugLib
 
     private static self | null $instance;
 
-    public static function init(string $logFile = '', int $mode = self::MODE_WITH_OUTPUT): self
-    {
+    public static function init(
+        string $logFile = __DIR__ . 'log-path-need-define.log',
+        int $mode = self::MODE_WITH_OUTPUT
+    ): self {
         self::$instance = new self($logFile, $mode);
 
         return self::$instance;

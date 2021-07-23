@@ -15,12 +15,10 @@
     },
     "autoload": {
         "psr-4": {
-            "It5\\": [
-                "src",
-                "test/tests-quick",
-                "test/tests-adapters",
-                "test/tests-long"
-            ]
+            "It5\\": ["src"],
+            "It5\\TestsLong": ["test/tests-long"],
+            "It5\\TestsQuick": ["test/tests-quick"],
+            "It5\\TestsAdapters": ["test/tests-adapters"]
         }
     },
     "require": {
