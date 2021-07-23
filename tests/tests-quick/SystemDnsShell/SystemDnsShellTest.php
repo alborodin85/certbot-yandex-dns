@@ -1,8 +1,9 @@
 <?php
 
-namespace SystemDnsShell;
+namespace It5\SystemDnsShell;
 
 use It5\DebugLibs\DebugLib;
+use It5\Env;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
 use It5\SystemDnsShell\SystemDnsShell;
 use PHPUnit\Framework\TestCase;
@@ -14,7 +15,11 @@ class SystemDnsShellTest extends TestCase
     public function setUp(): void
     {
         DebugLib::init();
-        $this->dnsShell = new SystemDnsShell();
+        $this->dnsShell = new SystemDnsShell(
+            Env::env()->maxWaitingSpreadingSeconds,
+            Env::env()->testingSpreadingIntervalSeconds,
+            '8.8.8.8'
+        );
     }
 
     public function testGetDnsParameters()

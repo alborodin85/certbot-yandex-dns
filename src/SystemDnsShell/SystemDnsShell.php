@@ -3,12 +3,13 @@
 namespace It5\SystemDnsShell;
 
 use It5\DebugLibs\DebugLib;
+use JetBrains\PhpStorm\Pure;
 
 class SystemDnsShell
 {
     private CliCommandExecutor $commandExecutor;
 
-    public function __construct(
+    #[Pure] public function __construct(
         private int $maxWaitingSpreadingSeconds,
         private int $testingSpreadingIntervalSeconds,
         private string $dnsServerIp,
@@ -71,8 +72,6 @@ class SystemDnsShell
             $command .= " @{$dnsServerIp}";
         }
         $commandResult = $this->commandExecutor->getCommandResultArray($command, '');
-
-//        DebugLib::dump($commandResult);
 
         $recordId = 1;
         foreach ($commandResult as $strRecord) {
