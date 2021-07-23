@@ -4,7 +4,7 @@ namespace It5\SystemDnsShell;
 
 use JetBrains\PhpStorm\Pure;
 
-class SystemDnsShellError extends \Exception
+class SystemDnsShellError extends \Error
 {
     #[Pure] public function __construct($message = "", $code = 0, \Throwable $previous = null)
     {

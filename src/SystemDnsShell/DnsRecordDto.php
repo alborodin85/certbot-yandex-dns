@@ -5,13 +5,13 @@ namespace It5\SystemDnsShell;
 class DnsRecordDto
 {
     function __construct(
-        public string $ttl,
-        public string $domain,
-        public string $fqdn,
         public string $record_id,
-        public string $type,
+        public string $domain,
         public string $subdomain,
-        public string $priority,
+        public string $fqdn,
+        public string $type,
         public string $content,
+        public string $priority,
+        public string $ttl,
     ) { }
 }
