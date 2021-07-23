@@ -2,6 +2,7 @@
 
 namespace ParametersParser;
 
+use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\CliParametersError;
 use It5\ParametersParser\CliParametersRegistry;
 use PHPUnit\Framework\TestCase;
@@ -14,6 +15,7 @@ class CliParametersRegistryTest extends TestCase
 
     public function setUp(): void
     {
+        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
         $this->cliArgv = [
             __FILE__,
             '--quiet',

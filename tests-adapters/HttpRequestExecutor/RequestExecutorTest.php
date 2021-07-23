@@ -3,7 +3,6 @@
 namespace HttpRequestExecutor;
 
 use It5\Adapters\HttpRequestExecutor\HttpRequestExecutorError;
-use It5\CurlShell\CurlShellError;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
 use PHPUnit\Framework\TestCase;

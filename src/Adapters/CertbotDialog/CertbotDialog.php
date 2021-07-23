@@ -10,7 +10,8 @@ class CertbotDialog
 {
     private CommandBuilder $commandBuilder;
 
-    #[Pure] public function __construct()
+    #[Pure]
+    public function __construct()
     {
         $this->commandBuilder = new CommandBuilder();
     }
