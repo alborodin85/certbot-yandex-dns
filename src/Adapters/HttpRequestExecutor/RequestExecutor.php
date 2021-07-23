@@ -14,7 +14,7 @@ class RequestExecutor
 
     public function __construct()
     {
-        Trans::instance()->init(__DIR__ . '/localization/ru.php');
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
     /** Делает запрос с GET-параметрами (GET, DELETE, PATCH). Возвращает сырую строку */
@@ -128,6 +128,7 @@ class RequestExecutor
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_SSL_VERIFYPEER => false,
         ];
 
         return $options;

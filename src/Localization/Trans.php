@@ -2,6 +2,8 @@
 
 namespace It5\Localization;
 
+use It5\DebugLibs\DebugLib;
+
 class Trans
 {
     private static self $instance;
@@ -19,28 +21,31 @@ class Trans
         return self::instance()->getString($key, ...$subs);
     }
 
-    public static function phrases(): array
-    {
-        return self::instance()->phrases;
-    }
-
 // ---------------------------------------------
 
-    private array $phrases;
+    private array $phrases = [];
+    private array $existingLangFiles = [];
 
-    public function init(string $fileAbsolutePath)
+    public function addPhrases(string $fileAbsolutePath)
     {
-        $this->phrases = include $fileAbsolutePath;
+        if (!in_array($fileAbsolutePath, $this->existingLangFiles)) {
+            $currentPhrases = include $fileAbsolutePath;
+            $this->phrases = array_merge_recursive($this->phrases, $currentPhrases);
+            $this->existingLangFiles[] = $fileAbsolutePath;
+        }
+    }
+
+    public function clearPhrases()
+    {
+        $this->existingLangFiles = [];
+        $this->phrases = [];
     }
 
     public function getString(string $key, string ...$subs): string
     {
-        if (is_null($this->phrases)) {
-            throw new LocalizationError('It5\Localization\Trans not initiated!');
-        }
-
         $keysParsed = explode('.', $key);
         $subArray = $this->phrases;
+
         foreach ($keysParsed as $subKey) {
             $subArray = $subArray[$subKey];
         }

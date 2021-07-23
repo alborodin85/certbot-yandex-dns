@@ -2,7 +2,7 @@
 
 namespace It5\ParametersParser;
 
-use It5\Localization\Ru;
+use It5\Localization\Trans;
 
 class DomainsParametersRegistry
 {
@@ -12,6 +12,7 @@ class DomainsParametersRegistry
     private function __construct(
         private string $configAbsolutePath,
     ) {
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
         $this->parameters = $this->parseDomainSettingsFile();
     }
 
@@ -27,7 +28,7 @@ class DomainsParametersRegistry
     public static function singleton(): self
     {
         if (empty(self::$instance)) {
-            throw new DomainsParametersError(Ru::get('errors.cli_registry_not_inited'));
+            throw new DomainsParametersError(Trans::T('errors.domain_registry_not_inited'));
         }
 
         return self::$instance;
@@ -51,10 +52,10 @@ class DomainsParametersRegistry
         );
 
         if (!count($result)) {
-            throw new DomainsParametersError(Ru::get('errors.domain_absent', $domain));
+            throw new DomainsParametersError(Trans::T('errors.domain_absent', $domain));
         }
         if (count($result) > 1) {
-            throw new DomainsParametersError(Ru::get('errors.domain_redundant_record', $domain));
+            throw new DomainsParametersError(Trans::T('errors.domain_redundant_record', $domain));
         }
 
         return $result[0];
@@ -114,7 +115,7 @@ class DomainsParametersRegistry
     private function checkParam(string $domain, string $paramName, string $paramValue): bool
     {
         if (!$paramValue) {
-            throw new DomainsParametersError(Ru::get('errors.domain_empty_param', $domain, $paramName));
+            throw new DomainsParametersError(Trans::T('errors.domain_empty_param', $domain, $paramName));
         }
 
         return true;

@@ -2,8 +2,8 @@
 
 namespace It5\ParametersParser;
 
+use It5\Localization\Trans;
 use JetBrains\PhpStorm\Pure;
-use It5\Localization\Ru;
 
 class DomainsParametersCollection implements \Iterator, \ArrayAccess, \Countable
 {
@@ -12,6 +12,7 @@ class DomainsParametersCollection implements \Iterator, \ArrayAccess, \Countable
 
     public function __construct()
     {
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
         $this->collection = [];
         $this->rewind();
     }
@@ -60,7 +61,7 @@ class DomainsParametersCollection implements \Iterator, \ArrayAccess, \Countable
     public function offsetSet($offset, $value): void
     {
         if (!($value instanceof DomainParametersDto)) {
-            throw new DomainsParametersError(Ru::get('errors.domain_coll_incorrect_value'));
+            throw new DomainsParametersError(Trans::T('errors.domain_coll_incorrect_value'));
         }
         if (is_null($offset)) {
             $this->collection[] = $value;

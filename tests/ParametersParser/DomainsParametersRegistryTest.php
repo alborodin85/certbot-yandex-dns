@@ -2,11 +2,12 @@
 
 namespace ParametersParser;
 
+use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
 use It5\ParametersParser\DomainsParametersCollection;
 use It5\ParametersParser\DomainsParametersRegistry;
-use It5\Localization\Ru;
 use PHPUnit\Framework\TestCase;
+use It5\Localization\Trans;
 
 class DomainsParametersRegistryTest extends TestCase
 {
@@ -14,6 +15,7 @@ class DomainsParametersRegistryTest extends TestCase
 
     public function setUp(): void
     {
+        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
         DomainsParametersRegistry::init(__DIR__ . '/DomainParametersStubs/domain-settings-stub.json');
         $this->collection = DomainsParametersRegistry::getCollection();
     }
@@ -40,14 +42,14 @@ class DomainsParametersRegistryTest extends TestCase
     public function testEmptyInstance()
     {
         DomainsParametersRegistry::reset();
-        $this->expectExceptionMessage(Ru::get('errors.cli_registry_not_inited'));
+        $this->expectExceptionMessage(Trans::T('errors.domain_registry_not_inited'));
         DomainsParametersRegistry::getCollection();
     }
 
     public function testAbsentDomain()
     {
         $domain = 's-dver.ru';
-        $this->expectExceptionMessage(Ru::get('errors.domain_absent', $domain));
+        $this->expectExceptionMessage(Trans::T('errors.domain_absent', $domain));
         DomainsParametersRegistry::getParametersForDomain($domain);
     }
 
@@ -55,14 +57,14 @@ class DomainsParametersRegistryTest extends TestCase
     {
         DomainsParametersRegistry::init(__DIR__ . '/DomainParametersStubs/domain-redundant-settings-stub.json');
         $domain = 'it5.su';
-        $this->expectExceptionMessage(Ru::get('errors.domain_redundant_record', $domain));
+        $this->expectExceptionMessage(Trans::T('errors.domain_redundant_record', $domain));
         DomainsParametersRegistry::getParametersForDomain($domain);
     }
 
     public function testEmptyParameter()
     {
         $domain = 'it5.su';
-        $this->expectExceptionMessage(Ru::get('errors.domain_empty_param', $domain, 'yandexToken'));
+        $this->expectExceptionMessage(Trans::T('errors.domain_empty_param', $domain, 'yandexToken'));
         DomainsParametersRegistry::init(__DIR__ . '/DomainParametersStubs/domain-empty-parameters-stub.json');
     }
 }

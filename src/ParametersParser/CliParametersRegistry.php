@@ -2,7 +2,7 @@
 
 namespace It5\ParametersParser;
 
-use It5\Localization\Ru;
+use It5\Localization\Trans;
 
 class CliParametersRegistry
 {
@@ -17,6 +17,7 @@ class CliParametersRegistry
         private array $allowedParams,
         private $allowedUnnamedCount
     ) {
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
         $this->parameters = $this->parseCliArgv();
         // Первый параметр в $argv - всегда путь к скрипту и он будет всегда
         $this->allowedUnnamedCount++;
@@ -45,7 +46,7 @@ class CliParametersRegistry
     public static function singleton(): self
     {
         if (empty(self::$instance)) {
-            throw new CliParametersError(Ru::get('errors.cli_registry_not_inited'));
+            throw new CliParametersError(Trans::T('errors.cli_registry_not_inited'));
         }
 
         return self::$instance;
@@ -78,7 +79,7 @@ class CliParametersRegistry
                 $paramName = str_replace('--', '', trim($paramsPair[0]));
                 if (count($this->allowedParams)) {
                     if (!in_array($paramName, $this->allowedParams)) {
-                        throw new CliParametersError(Ru::get('errors.cli_redundant_param', $paramName));
+                        throw new CliParametersError(Trans::T('errors.cli_redundant_param', $paramName));
                     }
                 }
                 if (isset($paramsPair[1])) {
@@ -96,7 +97,7 @@ class CliParametersRegistry
             }
             if ($this->allowedUnnamedCount != self::UNNAMED_UNLIMIT) {
                 if ($unnamedParamNum > $this->allowedUnnamedCount) {
-                    throw new CliParametersError(Ru::get('errors.cli_count'));
+                    throw new CliParametersError(Trans::T('errors.cli_count'));
                 }
             }
             $result['param' . $unnamedParamNum++] = $this->cliArgv[$i];
