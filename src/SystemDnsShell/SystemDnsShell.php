@@ -10,9 +10,7 @@ class SystemDnsShell
     private CliCommandExecutor $commandExecutor;
 
     #[Pure] public function __construct(
-        private int $maxWaitingSpreadingSeconds,
-        private int $testingSpreadingIntervalSeconds,
-        private string $dnsServerIp,
+        //
     ) {
         $this->commandExecutor = new CliCommandExecutor();
     }
@@ -20,42 +18,6 @@ class SystemDnsShell
     public function setCommandExecutorMock(CliCommandExecutor $commandExecutor)
     {
         $this->commandExecutor = $commandExecutor;
-    }
-
-    public function waitingSomeParameters(DnsRecordsCollection $dnsRecordsCollection)
-    {
-
-    }
-
-    public function waitingOneParameter(DnsRecordDto $recordDto): bool
-    {
-        $result = false;
-        $startTime = time();
-
-        $currentParameterValue = '';
-        while ($currentParameterValue != $recordDto->content) {
-            if (time() > $startTime + $this->maxWaitingSpreadingSeconds) {
-                break;
-            }
-            $recordsCollection = $this->getDnsParameterValues(
-                $recordDto->domain,
-                $recordDto->subdomain,
-                $recordDto->type,
-                $this->dnsServerIp
-            );
-            $correctRecords = $recordsCollection->filterAnd(
-                $recordDto->subdomain,
-                $recordDto->type,
-                $recordDto->content,
-            );
-            if (count($correctRecords)) {
-                $result = true;
-                break;
-            }
-            sleep($this->testingSpreadingIntervalSeconds);
-        }
-
-        return $result;
     }
 
     public function getDnsParameterValues(
@@ -74,6 +36,9 @@ class SystemDnsShell
         if ($dnsServerIp) {
             $command .= " @{$dnsServerIp}";
         }
+
+        DebugLib::dump($command);
+
         $commandResult = $this->commandExecutor->getCommandResultArray($command, '');
 
         $recordId = 1;
