@@ -10,15 +10,15 @@ class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
     private int $index;
     private array $collection;
 
-    public function __construct()
+    public function __construct(DnsRecordDto ...$items)
     {
-        $this->collection = [];
+        $this->collection = $items;
         $this->rewind();
     }
 
-    public function add(DnsRecordDto $item): void
+    public function add(DnsRecordDto ...$items): void
     {
-        $this->collection[] = $item;
+        $this->collection = array_merge($this->collection, $items);
     }
 
     public function rewind(): void
