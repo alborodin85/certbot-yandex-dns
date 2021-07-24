@@ -1,6 +1,6 @@
 <?php
 
-namespace SystemDnsShell;
+namespace It5\TestsQuick\SystemDnsShell;
 
 use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\CliCommandExecutor;

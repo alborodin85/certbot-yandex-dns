@@ -1,16 +1,16 @@
 <?php
 
-namespace It5\TestsLong\SystemDnsShell;
+namespace It5\TestsLong\DnsParameterWaiter;
 
 use It5\Adapters\YandexApi\YandexDnsApi;
 use It5\DebugLibs\DebugLib;
 use It5\Env;
+use It5\LongProcesses\DnsParameterWaiter\WaiterOneDnsRecord;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
-use It5\SystemDnsShell\SystemDnsShell;
 use PHPUnit\Framework\TestCase;
 
-class SystemDnsShellTest extends TestCase
+class WaiterOneDnsRecordTest  extends TestCase
 {
     private string $domain;
     private string $token;
@@ -20,7 +20,7 @@ class SystemDnsShellTest extends TestCase
         DebugLib::init();
 
         // Чтобы тестировать необходимо заполнить settings.json по образцу settings.example.json!
-        $settings = json_decode(file_get_contents("settings.json"), true);
+        $settings = json_decode(file_get_contents(__DIR__ . "/settings.json"), true);
         $this->domain = $settings['domain'];
         $this->token = $settings['token'];
     }
@@ -29,7 +29,7 @@ class SystemDnsShellTest extends TestCase
         $parameterName = '_yandex_dns_test_absent_parameter' . microtime(true);
         $parameterValue = '_yandex_dns_test_absent_parameter VALUE';
 
-        $shell = new SystemDnsShell(
+        $waiter = new WaiterOneDnsRecord(
             30, 1, 'dns1.yandex.ru'
         );
 
@@ -44,7 +44,7 @@ class SystemDnsShellTest extends TestCase
             ttl: 21600,
         );
 
-        $result = $shell->waitingOneParameter($recordDto);
+        $result = $waiter->waitingOneParameter($recordDto);
 
         $this->assertFalse($result);
     }
@@ -59,11 +59,11 @@ class SystemDnsShellTest extends TestCase
             $this->domain, $this->token, $parameterName, DnsRecordTypesEnum::TXT, $parameterValue
         );
 
-        $shell = new SystemDnsShell(
+        $waiter = new WaiterOneDnsRecord(
             Env::env()->maxWaitingSpreadingSeconds, Env::env()->testingSpreadingIntervalSeconds, 'dns1.yandex.ru'
         );
 
-        $result = $shell->waitingOneParameter($recordDto);
+        $result = $waiter->waitingOneParameter($recordDto);
 
         $yandexApi->delete(
             $this->domain, $this->token, $parameterName, DnsRecordTypesEnum::TXT
@@ -74,10 +74,10 @@ class SystemDnsShellTest extends TestCase
 
     public function testExistingTxtParameter()
     {
-        $parameterName = '_yandex_dns_test_existing_parameter';
-        $parameterValue = '_yandex_dns_test_existing_parameter VALUE';
+        $parameterName = '_yandex_dns_test_EXISTING_parameter';
+        $parameterValue = '_yandex_dns_test_EXISTING_parameter VALUE';
 
-        $shell = new SystemDnsShell(
+        $waiter = new WaiterOneDnsRecord(
             Env::env()->maxWaitingSpreadingSeconds, 1, 'dns1.yandex.ru'
         );
 
@@ -92,7 +92,7 @@ class SystemDnsShellTest extends TestCase
             ttl: 21600,
         );
 
-        $result = $shell->waitingOneParameter($recordDto);
+        $result = $waiter->waitingOneParameter($recordDto);
 
         $this->assertTrue($result);
     }
@@ -103,7 +103,7 @@ class SystemDnsShellTest extends TestCase
         $parameterValue = '185.97.200.104';
         $parameterType = DnsRecordTypesEnum::A;
 
-        $shell = new SystemDnsShell(
+        $waiter = new WaiterOneDnsRecord(
             Env::env()->maxWaitingSpreadingSeconds, 1, 'dns1.yandex.ru'
         );
 
@@ -118,7 +118,7 @@ class SystemDnsShellTest extends TestCase
             ttl: 21600,
         );
 
-        $result = $shell->waitingOneParameter($recordDto);
+        $result = $waiter->waitingOneParameter($recordDto);
 
         $this->assertTrue($result);
     }

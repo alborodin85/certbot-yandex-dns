@@ -18,6 +18,16 @@
             "it5.team",
             "*.it5.team"
         ],
+        "criticalRemainingDays": 14,
         "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem"
+    },
+    {
+        "domain": "s-dver.ru",
+        "subDomains": [
+            "s-dver.ru",
+            "*.s-dver.ru"
+        ],
+        "criticalRemainingDays": 10,
+        "certPath": "/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem"
     }
 ]
