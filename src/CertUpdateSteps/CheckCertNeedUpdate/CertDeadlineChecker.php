@@ -1,6 +1,6 @@
 <?php
 
-namespace It5\CertUpdateSteps\CheckCertDeadline;
+namespace It5\CertUpdateSteps\CheckCertNeedUpdate;
 
 use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
@@ -12,7 +12,7 @@ class CertDeadlineChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function check(string $certPath, int $criticalRemainingDays): bool
+    public function checkDeadline(string $certPath, int $criticalRemainingDays): bool
     {
         $result = true;
 
