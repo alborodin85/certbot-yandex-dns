@@ -4,6 +4,7 @@ namespace It5;
 
 use It5\Adapters\CertbotDialog\CertbotDialog;
 use It5\CheckCertNeedUpdate\CertDeadlineChecker;
+use It5\CheckCertNeedUpdate\CertDomainsChecker;
 use It5\Localization\Trans;
 use It5\LongProcesses\DnsParameterWaiter\WaiterSomeDnsRecords;
 use It5\ParametersParser\CliParametersRegistry;
@@ -20,6 +21,7 @@ class CertbotYandexDns
 
     private bool $isQuiet;
     private CertDeadlineChecker $certDeadlineChecker;
+    private CertDomainsChecker $certDomainsChecker;
     private YandexDnsApi $yandexDnsApi;
     private CertbotDialog $certbotDialog;
     private WaiterSomeDnsRecords $waiterDnsRecords;
@@ -43,6 +45,7 @@ class CertbotYandexDns
     ) {
         $this->initConfigs();
         $this->certDeadlineChecker = new CertDeadlineChecker();
+        $this->certDomainsChecker = new CertDomainsChecker();
         $this->yandexDnsApi = new YandexDnsApi(Env::env()->yandexApiDelayMicroseconds);
         $this->certbotDialog = new CertbotDialog();
         $this->waiterDnsRecords = new WaiterSomeDnsRecords(
@@ -55,6 +58,11 @@ class CertbotYandexDns
     public function setDeadlineCheckerMock(CertDeadlineChecker $checkerMock): void
     {
         $this->certDeadlineChecker = $checkerMock;
+    }
+
+    public function setDomainCheckerMock(CertDomainsChecker $checkerMock): void
+    {
+        $this->certDomainsChecker = $checkerMock;
     }
 
     public function setYandexDnsApiMock(YandexDnsApi $yandexDnsApiMock)
@@ -87,9 +95,11 @@ class CertbotYandexDns
 
     private function updateCertForOneDomain(DomainParametersDto $domainDto): bool
     {
-        // Проверить срок сертификата; если добавили поддоменов - принудительно обновить
-        if (!$this->certDeadlineChecker->checkDeadline($domainDto->certPath, $domainDto->criticalRemainingDays)) {
-            return false;
+        // Проверить срок и состав и сертификата
+        if (!$this->certDomainsChecker->checkDomainsChanged($domainDto->certPath, $domainDto->subDomains)) {
+            if (!$this->certDeadlineChecker->checkDeadline($domainDto->certPath, $domainDto->criticalRemainingDays)) {
+                return false;
+            }
         }
         // Начать диалог с CertBot
         $dialogDto = $this->certbotDialog->openDialog($domainDto, DebugLib::singleton()->logFile);
