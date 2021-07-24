@@ -1,6 +1,6 @@
 <?php
 
-namespace CertUpdateSteps\CheckCertDeadline;
+namespace It5\TestsQuick\CertUpdateSteps\CheckCertDeadline;
 
 use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\DebugLibs\DebugLib;
