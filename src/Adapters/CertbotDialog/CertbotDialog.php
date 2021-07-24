@@ -63,6 +63,20 @@ class CertbotDialog
         return $dnsRecords;
     }
 
+    public function startCheckingAndGetResult(DialogDto $dialogDto)
+    {
+        fwrite($dialogDto->stdInPipe, "\n");
+        $strCheckingResult = '';
+        $startTime = time();
+        while (time() < ($startTime + 10)) {
+            $currString = fgets($dialogDto->stdOutPipe);
+            DebugLib::ld($currString);
+            $strCheckingResult .= $currString;
+        }
+        DebugLib::ld('$strCheckingResult');
+        DebugLib::ld($strCheckingResult);
+    }
+
     public function closeDialog(DialogDto $dialogDto): void
     {
         fclose($dialogDto->stdInPipe);
