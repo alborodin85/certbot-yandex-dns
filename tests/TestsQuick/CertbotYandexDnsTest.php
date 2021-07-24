@@ -11,7 +11,7 @@ use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
 use phpDocumentor\Reflection\Types\True_;
 use PHPUnit\Framework\TestCase;
-use It5\CertUpdateSteps\CheckCertNeedUpdate\CertDeadlineChecker;
+use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\Adapters\YandexApi\YandexDnsApi;
 use It5\Adapters\CertbotDialog\CertbotDialog;
 use It5\Adapters\CertbotDialog\DialogDto;

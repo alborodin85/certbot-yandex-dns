@@ -2,7 +2,7 @@
 
 namespace CertUpdateSteps\CheckCertDeadline;
 
-use It5\CertUpdateSteps\CheckCertNeedUpdate\CertDeadlineChecker;
+use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\DebugLibs\DebugLib;
 use PHPUnit\Framework\TestCase;
 

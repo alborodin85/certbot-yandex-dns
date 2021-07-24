@@ -3,7 +3,7 @@
 namespace It5;
 
 use It5\Adapters\CertbotDialog\CertbotDialog;
-use It5\CertUpdateSteps\CheckCertNeedUpdate\CertDeadlineChecker;
+use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\Localization\Trans;
 use It5\LongProcesses\DnsParameterWaiter\WaiterSomeDnsRecords;
 use It5\ParametersParser\CliParametersRegistry;

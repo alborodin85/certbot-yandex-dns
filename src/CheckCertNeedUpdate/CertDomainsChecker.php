@@ -1,6 +1,6 @@
 <?php
 
-namespace It5\CertUpdateSteps\CheckCertNeedUpdate;
+namespace It5\CheckCertNeedUpdate;
 
 use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
@@ -14,7 +14,7 @@ class CertDomainsChecker
 
     public function checkDomainsChanged()
     {
-        
+
     }
 
     private function getCertDomainsString(string $certPath): string
