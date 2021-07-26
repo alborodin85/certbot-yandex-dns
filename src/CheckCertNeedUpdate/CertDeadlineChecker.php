@@ -12,7 +12,7 @@ class CertDeadlineChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function checkDeadline(string $certPath, int $criticalRemainingDays): bool
+    public function checkDeadline(string $certPath, int $criticalRemainingDays, bool $isSudoMode): bool
     {
         $result = true;
 
@@ -25,7 +25,7 @@ class CertDeadlineChecker
             return true;
         }
 
-        $certDeadline = $this->getCertDeadlineString($certPath);
+        $certDeadline = $this->getCertDeadlineString($certPath, $isSudoMode);
         if (!$this->checkNeedUpdate($certDeadline, $criticalRemainingDays)) {
             $result = false;
         }
@@ -33,15 +33,20 @@ class CertDeadlineChecker
         return $result;
     }
 
-    private function getCertDeadlineString(string $certPath): string
+    private function getCertDeadlineString(string $certPath, bool $isSudoMode): string
     {
-        $commandResult = `sudo openssl x509 -enddate -noout -in {$certPath}`;
+//        $commandPattern = "sudo openssl x509 -enddate -noout -in {$certPath}";
+        $commandPattern = "%s openssl x509 -enddate -noout -in %s";
+        $isSudoMode = $isSudoMode ? 'sudo ' : '';
+        $command = sprintf($commandPattern, $isSudoMode, $certPath);
+        $commandResult = `{$command}`;
+
         $commandResult = str_replace("\n", '', $commandResult);
         $commandResult = trim($commandResult);
         $commandResult = str_replace('notAfter=', '', $commandResult);
         $testTime = strtotime($commandResult);
         if (!$testTime) {
-            DebugLib::dump(Trans::T('errors.openssl_error'));
+            DebugLib::printAndLog(Trans::T('errors.openssl_error'));
         }
 
         return $commandResult;

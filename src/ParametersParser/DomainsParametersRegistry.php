@@ -74,8 +74,10 @@ class DomainsParametersRegistry
         $subDomains = [];
         $adminEmail = '';
         $yandexToken = '';
-        $dryRun = true;
-        $dnsParameterName = '';
+        $isDryRun = false;
+        $isForceRenewal = true;
+        $isSudoMode = false;
+        $dnsParameterName = '_acme-challenge';
         $criticalRemainingDays = 0;
         $certPath = '';
         foreach ($arSettings as $arDomainItem) {
@@ -87,13 +89,14 @@ class DomainsParametersRegistry
             $this->checkParam($domain, 'adminEmail', $adminEmail);
             $yandexToken = $arDomainItem['yandexToken'] ?? $yandexToken;
             $this->checkParam($domain, 'yandexToken', $yandexToken);
-            $dryRun = $arDomainItem['dryRun'] ?? $dryRun;
             $dnsParameterName = $arDomainItem['dnsParameterName'] ?? $dnsParameterName;
-            $this->checkParam($domain, 'dnsParameterName', $dnsParameterName);
             $criticalRemainingDays = $arDomainItem['criticalRemainingDays'] ?? $criticalRemainingDays;
             $this->checkParam($domain, 'criticalRemainingDays', $criticalRemainingDays);
             $certPath = $arDomainItem['certPath'] ?? $certPath;
             $this->checkParam($domain, 'certPath', $certPath);
+            $isDryRun = $arDomainItem['isDryRun'] ?? $isDryRun;
+            $isForceRenewal = $arDomainItem['isForceRenewal'] ?? $isForceRenewal;
+            $isSudoMode = $arDomainItem['sudoMode'] ?? $isSudoMode;
 
             $domainItemDto = new DomainParametersDto(
                 id: $id++,
@@ -101,10 +104,12 @@ class DomainsParametersRegistry
                 subDomains: $subDomains,
                 adminEmail: $adminEmail,
                 yandexToken: $yandexToken,
-                dryRun: $dryRun,
                 dnsParameterName: $dnsParameterName,
                 criticalRemainingDays: $criticalRemainingDays,
                 certPath: $certPath,
+                isDryRun: $isDryRun,
+                isForceRenewal: $isForceRenewal,
+                isSudoMode: $isSudoMode,
             );
 
             $collection[] = $domainItemDto;

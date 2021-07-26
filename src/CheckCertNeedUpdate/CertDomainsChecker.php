@@ -12,7 +12,7 @@ class CertDomainsChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function isDomainsChanged(string $certPath, array $subDomains): bool
+    public function isDomainsChanged(string $certPath, array $subDomains, bool $isSudoMode): bool
     {
         try {
             $fileType = filetype($certPath);
@@ -23,7 +23,7 @@ class CertDomainsChecker
             return true;
         }
 
-        $existDomains = $this->getCertDomains($certPath);
+        $existDomains = $this->getCertDomains($certPath, $isSudoMode);
 
         // Проверяем, что в конфиге не появились новые домены
         foreach ($subDomains as $newDomain) {
@@ -42,9 +42,13 @@ class CertDomainsChecker
         return false;
     }
 
-    private function getCertDomains(string $certPath): array
+    private function getCertDomains(string $certPath, bool $isSudoMode): array
     {
-        $commandResult = `sudo openssl x509 -noout -in {$certPath} -ext subjectAltName`;
+//        $commandPattern = "sudo openssl x509 -noout -in {$certPath} -ext subjectAltName";
+        $commandPattern = "%s openssl x509 -noout -in %s -ext subjectAltName";
+        $isSudoMode = $isSudoMode ? 'sudo ' : '';
+        $command = sprintf($commandPattern, $isSudoMode, $certPath);
+        $commandResult = `{$command}`;
 
         $matches = [];
         $parse_result = preg_match('/.*?(DNS:.*){1}.*/miu', $commandResult, $matches);
