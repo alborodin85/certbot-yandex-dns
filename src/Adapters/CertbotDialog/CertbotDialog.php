@@ -48,6 +48,10 @@ class CertbotDialog
                 $currString = trim($currString);
                 $fullString .= $currString . "\n";
             }
+
+            DebugLib::ld('$fullString');
+            DebugLib::ld($fullString);
+
             $dnsParamName = $this->commandBuilder->retrieveDnsParameterName($fullString, $parametersDto);
             $dnsParamValue = $this->commandBuilder->retrieveDnsParameterValue($fullString, $dnsParamName);
             $dnsRecords[] = [
@@ -65,15 +69,20 @@ class CertbotDialog
 
     public function startCheckingAndGetResult(DialogDto $dialogDto)
     {
+        DebugLib::ld('Ждем 10 сек, пока пройдет процесс...');
+        $strCheckingResult = fread($dialogDto->stdOutPipe, 1024 * 10);
+        DebugLib::ld('$strCheckingResult-1');
+        DebugLib::ld($strCheckingResult);
+
+        DebugLib::ld('Отправляем последний Enter...');
         fwrite($dialogDto->stdInPipe, "\n");
-        $strCheckingResult = '';
-        $startTime = time();
-        while (time() < ($startTime + 10)) {
-            $currString = fgets($dialogDto->stdOutPipe);
-            DebugLib::ld($currString);
-            $strCheckingResult .= $currString;
-        }
-        DebugLib::ld('$strCheckingResult');
+
+        DebugLib::ld('Ждем 30 сек, пока пройдет процесс...');
+        sleep(30);
+        DebugLib::ld('Принимаем результат вывода...');
+        $strCheckingResult = fread($dialogDto->stdOutPipe, 1024 * 10);
+
+        DebugLib::ld('$strCheckingResult-2');
         DebugLib::ld($strCheckingResult);
     }
 
