@@ -10,11 +10,12 @@ class DomainParametersDto
         public array $subDomains,
         public string $adminEmail,
         public string $yandexToken,
-        public string $dnsParameterName,
-        public int $criticalRemainingDays,
         public string $certPath,
-        public bool $isDryRun,
-        public bool $isForceRenewal,
-        public bool $isSudoMode,
+
+        public string $dnsParameterName = '_acme-challenge',
+        public int $criticalRemainingDays = 7,
+        public bool $isDryRun = false,
+        public bool $isForceRenewal = true,
+        public bool $isSudoMode = false,
     ) {}
 }

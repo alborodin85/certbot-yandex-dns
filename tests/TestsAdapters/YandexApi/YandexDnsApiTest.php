@@ -6,7 +6,6 @@ use It5\CurlShell\HttpRequestWrapper;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 use It5\DebugLibs\DebugLib;
 use It5\Env;
-use It5\ParametersParser\DomainsParametersCollection;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
@@ -59,7 +58,7 @@ class YandexDnsApiTest extends TestCase
         ];
     }
 
-    protected function onNotSuccessfulTest(\Throwable $ex): void
+    protected function onNotSuccessfulTest(\Throwable $t): void
     {
         $newRecords = new DnsRecordsCollection(
             ...$this->existsRecordsForTestsSync()->toArray(),
@@ -67,7 +66,7 @@ class YandexDnsApiTest extends TestCase
         );
         $this->yandexShell->deleteSome($newRecords, $this->token);
 
-        throw $ex;
+        throw $t;
     }
 
     public function testSyncRecordNothing()
@@ -132,7 +131,7 @@ class YandexDnsApiTest extends TestCase
         $this->assertInstanceOf(DnsRecordDto::class, $result->findByUuid($newRecords[0]->uuid()));
         $this->assertInstanceOf(DnsRecordDto::class, $result->findByUuid($newRecords[1]->uuid()));
         $this->assertInstanceOf(DnsRecordDto::class, $result->findByUuid($newRecords[2]->uuid()));
-        $this->assertInstanceOf(DnsRecordDto::class, $result->findByUuid($newRecords[4]->uuid()));
+        $this->assertInstanceOf(DnsRecordDto::class, $result->findByUuid($newRecords[3]->uuid()));
 
         $this->yandexShell->deleteSome($newRecords, $this->token);
     }

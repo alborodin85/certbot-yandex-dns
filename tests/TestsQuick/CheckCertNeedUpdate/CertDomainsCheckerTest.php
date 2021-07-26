@@ -2,7 +2,6 @@
 
 namespace It5\TestsQuick\CheckCertNeedUpdate;
 
-use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\CheckCertNeedUpdate\CertDomainsChecker;
 use It5\CheckCertNeedUpdate\CheckCertNeedUpdateError;
 use It5\DebugLibs\DebugLib;
@@ -26,7 +25,7 @@ class CertDomainsCheckerTest extends TestCase
             0 => 's-tsk.ru',
             1 => '*.s-tsk.ru',
         ];
-        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains, true);
 
         $this->assertFalse($result);
     }
@@ -35,7 +34,7 @@ class CertDomainsCheckerTest extends TestCase
         $subDomains = [
             0 => 's-tsk.ru',
         ];
-        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains, true);
 
         $this->assertTrue($result);
     }
@@ -47,7 +46,7 @@ class CertDomainsCheckerTest extends TestCase
             1 => '*.s-tsk.ru',
             2 => '*.ady.s-tsk.ru',
         ];
-        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains, true);
 
         $this->assertTrue($result);
     }
@@ -56,6 +55,13 @@ class CertDomainsCheckerTest extends TestCase
     {
         $certPath = __DIR__ . '/notCert.txt';
         $this->expectException(CheckCertNeedUpdateError::class);
-        $this->checker->isDomainsChanged($certPath, []);
+        $this->checker->isDomainsChanged($certPath, [], true);
+    }
+
+    public function testCertAbsent()
+    {
+        $certPath = __DIR__ . '/absent-file.txt';
+        $result = $this->checker->isDomainsChanged($certPath, [], true);
+        $this->assertTrue($result);
     }
 }

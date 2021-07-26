@@ -31,11 +31,11 @@ class CertbotYandexDnsTest extends TestCase
 
         $deadlineChecker = $this->getMockBuilder(CertDeadlineChecker::class)->getMock();
         $deadlineChecker->expects($this->exactly(3))
-            ->method('checkDeadline')
+            ->method('isPeriodCritical')
             ->withConsecutive(
-                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 7],
-                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 14],
-                ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', 10],
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 7, true],
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 14, true],
+                ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', 10, true],
             )
             ->will($this->onConsecutiveCalls(true, false, true));
         $object->setDeadlineCheckerMock($deadlineChecker);
@@ -56,9 +56,9 @@ class CertbotYandexDnsTest extends TestCase
         $domainChecker->expects($this->exactly(3))
             ->method('isDomainsChanged')
             ->withConsecutive(
-                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains1],
-                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains2],
-                ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', $subDomains3],
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains1, true],
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains2, true],
+                ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', $subDomains3, true],
             )
             ->will($this->onConsecutiveCalls(false, false, false));
         $object->setDomainCheckerMock($domainChecker);

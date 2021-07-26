@@ -1,9 +1,8 @@
 <?php
 
-namespace CertUpdateSteps\CertbotDialog;
+namespace It5\TestsAdapters\CertbotDialog;
 
 use It5\Adapters\CertbotDialog\CommandBuilder;
-use It5\Adapters\HttpRequestExecutor\HttpRequestExecutorError;
 use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
 use PHPUnit\Framework\TestCase;
@@ -11,6 +10,20 @@ use PHPUnit\Framework\TestCase;
 class CommandBuilderTest extends TestCase
 {
     private CommandBuilder $commandBuilder;
+    private array $arParams = [
+        'id' => 1,
+        'domain' => 'it5.su',
+        'subDomains' => ['admin24-ady.it5.su', '*.admin24-ady.it5.su'],
+        'adminEmail' => 'vasa@mail.ru',
+        'yandexToken' => 'yandexToken',
+        'certPath' => '/etc/letsencrypt/live/it5.su/fullchain.pem',
+
+        'criticalRemainingDays' => 7,
+        'dnsParameterName' => '_acme-challenge',
+        'isDryRun' => true,
+        'isForceRenewal' => true,
+        'isSudoMode' => true,
+    ];
 
     public function setUp(): void
     {
@@ -20,25 +33,25 @@ class CommandBuilderTest extends TestCase
 
     public function testBuildCommandDryRun()
     {
-        $commandCorrect = 'sudo certbot certonly --manual-public-ip-logging-ok --agree-tos --email alborodin85@mail.ru --renew-by-default -d *.it5.su -d it5.su --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --dry-run';
-
-        $parameters = new DomainParametersDto(
-            1, 'it5.su', ['*.it5.su', 'it5.su'], 'alborodin85@mail.ru', '', true, '', 0, ''
-        );
+        $commandCorrect = 'sudo  certbot certonly --manual-public-ip-logging-ok --agree-tos --email vasa@mail.ru --renew-by-default -d admin24-ady.it5.su -d *.admin24-ady.it5.su --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --dry-run --force-renewal';
+        $parameters = new DomainParametersDto(...$this->arParams);
         $commandResult = $this->commandBuilder->buildCommand($parameters);
+        $this->assertEquals($commandCorrect, $commandResult);
 
+        $commandCorrect = ' certbot certonly --manual-public-ip-logging-ok --agree-tos --email vasa@mail.ru --renew-by-default -d admin24-ady.it5.su -d *.admin24-ady.it5.su --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory --dry-run --force-renewal';
+        $this->arParams['isSudoMode'] = false;
+        $parameters = new DomainParametersDto(...$this->arParams);
+        $commandResult = $this->commandBuilder->buildCommand($parameters);
         $this->assertEquals($commandCorrect, $commandResult);
     }
 
     public function testBuildCommandNormal()
     {
-        $commandCorrect = 'sudo certbot certonly --manual-public-ip-logging-ok --agree-tos --email vasa@mail.ru --renew-by-default -d *.it5.su -d it5.su --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory ';
-
-        $parameters = new DomainParametersDto(
-            1, 'it5.su', ['*.it5.su', 'it5.su'], 'vasa@mail.ru', '', false, '', 0, ''
-        );
+        $commandCorrect = 'sudo  certbot certonly --manual-public-ip-logging-ok --agree-tos --email vasa@mail.ru --renew-by-default -d admin24-ady.it5.su -d *.admin24-ady.it5.su --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory  ';
+        $this->arParams['isDryRun'] = false;
+        $this->arParams['isForceRenewal'] = false;
+        $parameters = new DomainParametersDto(...$this->arParams);
         $commandResult = $this->commandBuilder->buildCommand($parameters);
-
         $this->assertEquals($commandCorrect, $commandResult);
     }
 

@@ -7,10 +7,13 @@
         ],
         "adminEmail": "admin@it5.su",
         "yandexToken": "jkdfjkjkhjksdfjkgjksdfjkgf",
-        "dryRun": true,
+        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem",
+
         "dnsParameterName": "_acme-challenge",
         "criticalRemainingDays": 7,
-        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem"
+        "isDryRun": true,
+        "isForceRenewal": true,
+        "isSudoMode": true
     },
     {
         "domain": "it5.team",

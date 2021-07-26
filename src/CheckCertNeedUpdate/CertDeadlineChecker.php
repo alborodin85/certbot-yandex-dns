@@ -12,7 +12,7 @@ class CertDeadlineChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function checkDeadline(string $certPath, int $criticalRemainingDays, bool $isSudoMode): bool
+    public function isPeriodCritical(string $certPath, int $criticalRemainingDays, bool $isSudoMode): bool
     {
         $result = true;
 
@@ -46,7 +46,7 @@ class CertDeadlineChecker
         $commandResult = str_replace('notAfter=', '', $commandResult);
         $testTime = strtotime($commandResult);
         if (!$testTime) {
-            DebugLib::printAndLog(Trans::T('errors.openssl_error'));
+            throw new CheckCertNeedUpdateError(Trans::T('errors.openssl_error'));
         }
 
         return $commandResult;
@@ -57,11 +57,7 @@ class CertDeadlineChecker
         $deadLineTimestamp = strtotime($certDeadline);
         $currentTimestamp = time();
 
-        if ($deadLineTimestamp) {
-            $needUpdate = ($deadLineTimestamp - $currentTimestamp) < $criticalRemainingDays * 24 * 3600;
-        } else {
-            $needUpdate = false;
-        }
+        $needUpdate = ($deadLineTimestamp - $currentTimestamp) < $criticalRemainingDays * 24 * 3600;
 
         return $needUpdate;
     }

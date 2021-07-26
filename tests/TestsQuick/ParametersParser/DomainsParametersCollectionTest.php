@@ -1,6 +1,6 @@
 <?php
 
-namespace ParametersParser;
+namespace It5\TestsQuick\ParametersParser;
 
 use It5\ParametersParser\DomainParametersDto;
 use It5\ParametersParser\DomainsParametersCollection;
@@ -20,10 +20,12 @@ class DomainsParametersCollectionTest extends TestCase
             'subDomains' => ['subDomains'],
             'adminEmail' => 'adminEmail',
             'yandexToken' => 'yandexToken',
-            'dryRun' => 'dryRun',
-            'dnsParameterName' => 'dnsParameterName',
             'criticalRemainingDays' => 7,
             'certPath' => 'certPath',
+            'dnsParameterName' => 'dnsParameterName',
+            'isDryRun' => true,
+            'isForceRenewal' => true,
+            'isSudoMode' => true,
         ];
         $this->collection->add(new DomainParametersDto(...$dtoParams));
         $dtoParams['id'] = 2;
@@ -36,9 +38,19 @@ class DomainsParametersCollectionTest extends TestCase
         $this->collection[] = new DomainParametersDto(...$dtoParams);
     }
 
-    public function tearDown(): void
+    public function testDefaultValues()
     {
-        //
+        $dtoParams = [
+            'id' => 6,
+            'domain' => 'domain',
+            'subDomains' => ['subDomains'],
+            'adminEmail' => 'adminEmail',
+            'yandexToken' => 'yandexToken',
+            'certPath' => 'certPath',
+        ];
+        $collection = new DomainsParametersCollection();
+        $collection[] = new DomainParametersDto(...$dtoParams);
+        $this->assertCount(1, $collection);
     }
 
     public function testClass()

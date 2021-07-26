@@ -103,8 +103,12 @@ class CertbotYandexDns
     {
         // Проверить срок и состав и сертификата
         DebugLib::printAndLog('Проверка необходимости обновления для домена ' . $domainDto->domain . '...');
-        if (!$this->certDomainsChecker->isDomainsChanged($domainDto->certPath, $domainDto->subDomains)) {
-            if (!$this->certDeadlineChecker->checkDeadline($domainDto->certPath, $domainDto->criticalRemainingDays)) {
+        $isDomainsChanged = $this->certDomainsChecker
+            ->isDomainsChanged($domainDto->certPath, $domainDto->subDomains, $domainDto->isSudoMode);
+        if (!$isDomainsChanged) {
+            $isPeriodCritical = $this->certDeadlineChecker
+                ->isPeriodCritical($domainDto->certPath, $domainDto->criticalRemainingDays, $domainDto->isSudoMode);
+            if (!$isPeriodCritical) {
                 DebugLib::printAndLog('Сертификат домена ' . $domainDto->domain . ' не нуждается в обновлении.');
                 return false;
             }

@@ -78,7 +78,7 @@ class DomainsParametersRegistry
         $isForceRenewal = true;
         $isSudoMode = false;
         $dnsParameterName = '_acme-challenge';
-        $criticalRemainingDays = 0;
+        $criticalRemainingDays = 7;
         $certPath = '';
         foreach ($arSettings as $arDomainItem) {
             $domain = $arDomainItem['domain'] ?? $domain;
@@ -89,14 +89,14 @@ class DomainsParametersRegistry
             $this->checkParam($domain, 'adminEmail', $adminEmail);
             $yandexToken = $arDomainItem['yandexToken'] ?? $yandexToken;
             $this->checkParam($domain, 'yandexToken', $yandexToken);
-            $dnsParameterName = $arDomainItem['dnsParameterName'] ?? $dnsParameterName;
-            $criticalRemainingDays = $arDomainItem['criticalRemainingDays'] ?? $criticalRemainingDays;
-            $this->checkParam($domain, 'criticalRemainingDays', $criticalRemainingDays);
             $certPath = $arDomainItem['certPath'] ?? $certPath;
             $this->checkParam($domain, 'certPath', $certPath);
+
+            $dnsParameterName = $arDomainItem['dnsParameterName'] ?? $dnsParameterName;
+            $criticalRemainingDays = $arDomainItem['criticalRemainingDays'] ?? $criticalRemainingDays;
             $isDryRun = $arDomainItem['isDryRun'] ?? $isDryRun;
             $isForceRenewal = $arDomainItem['isForceRenewal'] ?? $isForceRenewal;
-            $isSudoMode = $arDomainItem['sudoMode'] ?? $isSudoMode;
+            $isSudoMode = $arDomainItem['isSudoMode'] ?? $isSudoMode;
 
             $domainItemDto = new DomainParametersDto(
                 id: $id++,

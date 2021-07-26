@@ -1,6 +1,6 @@
 <?php
 
-namespace HttpRequestExecutor;
+namespace It5\TestsAdapters\HttpRequestExecutor;
 
 use It5\Adapters\HttpRequestExecutor\HttpRequestExecutorError;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
@@ -83,7 +83,7 @@ class RequestExecutorTest extends TestCase
         $this->assertStringContainsString('form-data; boundary', $result);
 
         $this->expectException(HttpRequestExecutorError::class);
-        $result = $this->executor->sendFile(
+        $this->executor->sendFile(
             $url, $method, $parameters, $headers, '', 'text-file.txt', ''
         );
 

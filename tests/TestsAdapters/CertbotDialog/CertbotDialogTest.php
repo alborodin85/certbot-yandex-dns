@@ -1,6 +1,6 @@
 <?php
 
-namespace CertUpdateSteps\CertbotDialog;
+namespace It5\TestsAdapters\CertbotDialog;
 
 use It5\Adapters\CertbotDialog\CertbotDialog;
 use It5\DebugLibs\DebugLib;
@@ -18,9 +18,22 @@ class CertbotDialogTest extends TestCase
     {
         $dialogObject = new CertbotDialog();
 
-        $parameters = new DomainParametersDto(
-            1, 'it5.su', ['it5.su', '*.it5.su'], 'alborodin85@mail.ru', '', true, '_acme-challenge', 7, '/etc/letsencrypt/live/it5.su/fullchain.pem'
-        );
+        $arParams = [
+            'id' => 1,
+            'domain' => 'it5.su',
+            'subDomains' => ['it5.su', '*.it5.su'],
+            'adminEmail' => 'alborodin85@mail.ru',
+            'yandexToken' => 'yandexToken',
+            'certPath' => '/etc/letsencrypt/live/it5.su/fullchain.pem',
+
+            'criticalRemainingDays' => 7,
+            'dnsParameterName' => '_acme-challenge',
+            'isDryRun' => true,
+            'isForceRenewal' => true,
+            'isSudoMode' => true,
+        ];
+
+        $parameters = new DomainParametersDto(...$arParams);
 
         $dialogDto = $dialogObject->openDialog($parameters, DebugLib::singleton()->logFile);
         $result = $dialogObject->getRequiredDnsRecords($dialogDto, $parameters);
@@ -29,9 +42,8 @@ class CertbotDialogTest extends TestCase
         $this->assertArrayHasKey('_acme-challenge', $result[0]);
         $this->assertArrayHasKey('_acme-challenge', $result[1]);
 
-        $parameters = new DomainParametersDto(
-            1, 'it5.su', ['admin24-ady.it5.su', '*.admin24-ady.it5.su'], 'alborodin85@mail.ru', '', true, '_acme-challenge', 7, '/etc/letsencrypt/live/it5.su/fullchain.pem'
-        );
+        $arParams['subDomains'] = ['admin24-ady.it5.su', '*.admin24-ady.it5.su'];
+        $parameters = new DomainParametersDto(...$arParams);
 
         $dialogDto = $dialogObject->openDialog($parameters, DebugLib::singleton()->logFile);
         $result = $dialogObject->getRequiredDnsRecords($dialogDto, $parameters);
