@@ -68,4 +68,35 @@ class DebugLibTest extends TestCase
         DebugLib::ld($this->message);
     }
 
+    public function testTwoParams()
+    {
+        ob_start();
+        $result = DebugLib::dump('title', $this->message);
+        ob_end_clean();
+        $this->assertTrue($result);
+    }
+
+    public function testPrintAndLog()
+    {
+        if (is_file($this->logFile)) {
+            unlink($this->logFile);
+        }
+
+        ob_start();
+        DebugLib::printAndLog($this->message);
+        ob_end_clean();
+
+        $logContent = file_get_contents($this->logFile);
+        $result = str_contains($logContent, $this->message);
+        $this->assertTrue($result);
+    }
+
+    public function testPrint()
+    {
+        ob_start();
+        $result = DebugLib::print($this->message);
+        ob_end_clean();
+        $this->assertTrue($result);
+    }
+
 }

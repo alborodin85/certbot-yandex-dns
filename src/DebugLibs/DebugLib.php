@@ -69,20 +69,39 @@ class DebugLib
         return true;
     }
 
-    public static function dump(mixed $data): bool
+    public static function print($data1, $data2=null): bool
     {
-        return self::singleton()->instanceDump($data);
+        return self::dump($data1, $data2);
     }
 
-    public function instanceDump(mixed $data): bool
+    public static function printAndLog($data): void
+    {
+        self::singleton()->instanceDump($data);
+        self::singleton()->instanceLog($data, Logger::INFO);
+    }
+
+    public static function dump($data1, $data2=null): bool
+    {
+        return self::singleton()->instanceDump($data1, $data2);
+    }
+
+    public function instanceDump($data1, $data2=null): bool
     {
         if ($this->mode < 3) {
             return false;
         }
 
-        echo "\n";
-        var_export($data);
-        echo "\n";
+        if (is_null($data2)) {
+            echo "\n";
+            var_export($data1);
+            echo "\n";
+        } else {
+            echo "\n";
+            echo "$data1:";
+            echo "\n";
+            var_export($data2);
+            echo "\n";
+        }
 
         return true;
     }
