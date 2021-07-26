@@ -66,7 +66,7 @@ class WaiterOneDnsRecordTest  extends TestCase
         $result = $waiter->waitingOneParameter($recordDto);
 
         $yandexApi->delete(
-            $this->domain, $this->token, $parameterName, DnsRecordTypesEnum::TXT
+            $this->domain, $this->token, $parameterName, DnsRecordTypesEnum::TXT, ''
         );
 
         $this->assertTrue($result);
@@ -75,7 +75,7 @@ class WaiterOneDnsRecordTest  extends TestCase
     public function testExistingTxtParameter()
     {
         $parameterName = '_yandex_dns_test_EXISTING_parameter';
-        $parameterValue = '_yandex_dns_test_EXISTING_parameter VALUE';
+        $parameterValue = 'DO NOT DELETE! Needed for auto-testing!';
 
         $waiter = new WaiterOneDnsRecord(
             Env::env()->maxWaitingSpreadingSeconds, 1, 'dns1.yandex.ru'

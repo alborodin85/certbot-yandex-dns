@@ -3,6 +3,7 @@
 namespace It5\LongProcesses\DnsParameterWaiter;
 
 use It5\DebugLibs\DebugLib;
+use It5\Localization\Trans;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\SystemDnsShell;
@@ -18,10 +19,11 @@ class WaiterSomeDnsRecords
         private string $dnsServerIp,
     )
     {
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
         $this->dnsShell = new SystemDnsShell();
     }
 
-    public function waitingSomeParameters(DnsRecordsCollection $dnsRecordsCollection)
+    public function waitingSomeParameters(DnsRecordsCollection $dnsRecordsCollection): bool
     {
         $result = false;
         $startTime = time();
@@ -36,7 +38,9 @@ class WaiterSomeDnsRecords
                 break;
             }
             foreach ($dnsRecordsCollection as $recordDto) {
-                DebugLib::dump($this->recordUuid($recordDto));
+
+//                DebugLib::dump('$recordDto', $this->recordUuid($recordDto));
+
                 if ($arParamsResults[$this->recordUuid($recordDto)]) {
                     continue;
                 }
@@ -47,7 +51,7 @@ class WaiterSomeDnsRecords
                     $this->dnsServerIp
                 );
 
-                DebugLib::dump($recordsCollection);
+//                DebugLib::dump('$recordsCollection', $recordsCollection);
 
                 $correctRecords = $recordsCollection->filterAnd(
                     $recordDto->subdomain,
@@ -55,14 +59,15 @@ class WaiterSomeDnsRecords
                     $recordDto->content,
                 );
 
-                DebugLib::dump($correctRecords);
+//                DebugLib::dump('$correctRecords', $correctRecords);
 
                 if (count($correctRecords)) {
+                    DebugLib::printAndLog(Trans::T('record_appeared', $recordDto->subdomain, $recordDto->content));
                     $arParamsResults[$this->recordUuid($recordDto)] = true;
                 }
             }
 
-            DebugLib::dump($arParamsResults);
+//            DebugLib::dump('$arParamsResults', $arParamsResults);
 
             if (!in_array(false, $arParamsResults)) {
                 $result = true;

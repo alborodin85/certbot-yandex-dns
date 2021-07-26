@@ -74,6 +74,7 @@ class WaiterSomeDnsRecordsTest extends TestCase
             $this->token,
             $this->parameterName1,
             DnsRecordTypesEnum::TXT,
+            '',
         );
 
         $this->yandexApi->delete(
@@ -81,6 +82,7 @@ class WaiterSomeDnsRecordsTest extends TestCase
             $this->token,
             $this->parameterName2,
             DnsRecordTypesEnum::A,
+            '',
         );
     }
 
