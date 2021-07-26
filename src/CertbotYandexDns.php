@@ -82,13 +82,19 @@ class CertbotYandexDns
 
     public function renewCerts(): bool
     {
+        DebugLib::printAndLog('Запуск процесса обновления сертификатов для ' . $this->configAbsolutePath);
         // Прочитать конфиг
         $domains = DomainsParametersRegistry::getCollection();
         // Запустить обновление для каждого домена из конфига
         foreach ($domains as $domainDto) {
+            DebugLib::printAndLog('Начата процедура обновления для домена ' . $domainDto->domain . '...');
             $result = $this->updateCertForOneDomain($domainDto);
-            DebugLib::dump($result);
+            if ($result) {
+                DebugLib::printAndLog('Процедура обновления для домена ' . $domainDto->domain . ' закончена.');
+            }
         }
+        DebugLib::printAndLog('Процесс обновления сертификатов завершен.');
+        DebugLib::printAndLog('*****');
 
         return true;
     }
@@ -96,33 +102,43 @@ class CertbotYandexDns
     private function updateCertForOneDomain(DomainParametersDto $domainDto): bool
     {
         // Проверить срок и состав и сертификата
-        if (!$this->certDomainsChecker->checkDomainsChanged($domainDto->certPath, $domainDto->subDomains)) {
+        DebugLib::printAndLog('Проверка необходимости обновления для домена ' . $domainDto->domain . '...');
+        if (!$this->certDomainsChecker->isDomainsChanged($domainDto->certPath, $domainDto->subDomains)) {
             if (!$this->certDeadlineChecker->checkDeadline($domainDto->certPath, $domainDto->criticalRemainingDays)) {
+                DebugLib::printAndLog('Сертификат домена ' . $domainDto->domain . ' не нуждается в обновлении.');
                 return false;
             }
         }
+
         // Начать диалог с CertBot
+        DebugLib::printAndLog('Открываем диалог с Certbot...');
         $dialogDto = $this->certbotDialog->openDialog($domainDto, DebugLib::singleton()->logFile);
-        // Получить из диалога требуемые DNS-параметры
+        // Получить из диалога требуемые DNS-записи
+        DebugLib::printAndLog('Получаем от Certbot требуемые DNS-записи...');
         $arDnsRecords = $this->certbotDialog->getRequiredDnsRecords($dialogDto, $domainDto);
-        // Проверить, нет ли в зоне параметров; если есть - удалить
-        // Создать в зоне требуемые параметры
-        $createdRecords = new DnsRecordsCollection();
+
+        // Проверить, нет ли в зоне записей для этого домена; если есть - удалить
+        DebugLib::printAndLog('Создаем в зоне требуемые DNS-записи...');
         foreach ($arDnsRecords as $arRecord) {
             foreach ($arRecord as $subDomain => $recordText) {
                 $this->yandexDnsApi->delete(
-                    $domainDto->domain, $domainDto->yandexToken, $subDomain, DnsRecordTypesEnum::TXT
+                    $domainDto->domain, $domainDto->yandexToken, $subDomain, DnsRecordTypesEnum::TXT, ''
                 );
+            }
+        }
+
+        // Создать в зоне новые требуемые записи
+        $createdRecords = new DnsRecordsCollection();
+        foreach ($arDnsRecords as $arRecord) {
+            foreach ($arRecord as $subDomain => $recordText) {
                 $createdRecords[] = $this->yandexDnsApi->create(
                     $domainDto->domain, $domainDto->yandexToken, $subDomain, DnsRecordTypesEnum::TXT, $recordText
                 );
             }
         }
 
-        DebugLib::dump(['$arDnsRecords', $arDnsRecords]);
-        DebugLib::dump(['$createdRecords', $createdRecords]);
-
         // Дождаться, пока зона распространится
+        DebugLib::printAndLog('Ждем, пока DNS-записи появятся на DNS-сервере Гугла в США...');
         $waitingResult = $this->waiterDnsRecords->waitingSomeParameters($createdRecords);
         if(!$waitingResult) {
             $errorMessage = Trans::T(
@@ -130,19 +146,24 @@ class CertbotYandexDns
                 implode("; ", $domainDto->subDomains),
                 Env::env()->maxWaitingSpreadingSeconds,
             );
-            DebugLib::ld($errorMessage);
+            DebugLib::printAndLog($errorMessage);
+            DebugLib::printAndLog('Закрываем диалог с Certbot...');
             $this->certbotDialog->closeDialog($dialogDto);
+            DebugLib::printAndLog('Чистим зону от созданных записей...');
             $this->deleteCreatedDnsRecords($createdRecords, $domainDto);
 
             return false;
         }
         // Дать последний Enter CertBot
+        DebugLib::printAndLog('Зона распространилась. Продолжаем диалог с Certbot...');
         $this->certbotDialog->startCheckingAndGetResult($dialogDto);
 
         // Закончить диалог с CertBot
+        DebugLib::printAndLog('Закрываем диалог с Certbot...');
         $this->certbotDialog->closeDialog($dialogDto);
 
         // Удалить добавленные DNS-записи
+        DebugLib::printAndLog('Чистим зону от созданных записей...');
         $this->deleteCreatedDnsRecords($createdRecords, $domainDto);
 
         return true;
@@ -152,9 +173,10 @@ class CertbotYandexDns
         DnsRecordsCollection $createdRecords,
         DomainParametersDto $domainDto,
     ): void {
+
         foreach ($createdRecords as $recordDto) {
             $this->yandexDnsApi->delete(
-                $domainDto->domain, $domainDto->yandexToken, $recordDto->subdomain, DnsRecordTypesEnum::TXT
+                $domainDto->domain, $domainDto->yandexToken, $recordDto->subdomain, DnsRecordTypesEnum::TXT, ''
             );
         }
     }
