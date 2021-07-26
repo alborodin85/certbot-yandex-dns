@@ -48,7 +48,7 @@ class DomainsParametersRegistryTest extends TestCase
 
     public function testAbsentDomain()
     {
-        $domain = 's-dver.ru';
+        $domain = 'dver29spb.ru';
         $this->expectExceptionMessage(Trans::T('errors.domain_absent', $domain));
         DomainsParametersRegistry::getParametersForDomain($domain);
     }

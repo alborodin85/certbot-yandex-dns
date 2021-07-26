@@ -26,7 +26,7 @@ class CertDomainsCheckerTest extends TestCase
             0 => 's-tsk.ru',
             1 => '*.s-tsk.ru',
         ];
-        $result = $this->checker->checkDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
 
         $this->assertFalse($result);
     }
@@ -35,7 +35,7 @@ class CertDomainsCheckerTest extends TestCase
         $subDomains = [
             0 => 's-tsk.ru',
         ];
-        $result = $this->checker->checkDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
 
         $this->assertTrue($result);
     }
@@ -45,9 +45,9 @@ class CertDomainsCheckerTest extends TestCase
         $subDomains = [
             0 => 's-tsk.ru',
             1 => '*.s-tsk.ru',
-            1 => '*.ady.s-tsk.ru',
+            2 => '*.ady.s-tsk.ru',
         ];
-        $result = $this->checker->checkDomainsChanged($this->mainCertPath, $subDomains);
+        $result = $this->checker->isDomainsChanged($this->mainCertPath, $subDomains);
 
         $this->assertTrue($result);
     }
@@ -56,6 +56,6 @@ class CertDomainsCheckerTest extends TestCase
     {
         $certPath = __DIR__ . '/notCert.txt';
         $this->expectException(CheckCertNeedUpdateError::class);
-        $this->checker->checkDomainsChanged($certPath, []);
+        $this->checker->isDomainsChanged($certPath, []);
     }
 }

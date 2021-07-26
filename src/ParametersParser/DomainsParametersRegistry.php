@@ -2,6 +2,7 @@
 
 namespace It5\ParametersParser;
 
+use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
 
 class DomainsParametersRegistry
@@ -58,7 +59,7 @@ class DomainsParametersRegistry
             throw new DomainsParametersError(Trans::T('errors.domain_redundant_record', $domain));
         }
 
-        return $result[0];
+        return reset($result);
     }
 
     public function parseDomainSettingsFile(): DomainsParametersCollection
