@@ -36,20 +36,24 @@ class SystemDnsShell
         if ($dnsServerIp) {
             $command .= " @{$dnsServerIp}";
         }
-
-        DebugLib::dump($command);
-
         $commandResult = $this->commandExecutor->getCommandResultArray($command, '');
 
         $recordId = 1;
         foreach ($commandResult as $strRecord) {
             $spaceSubs = '##SP##';
-            $strRecord = preg_replace('/\"(.*?)\s(.*?)\"/miu', "$1{$spaceSubs}$2", $strRecord);
+            $matches = [];
+            $quotesResult = preg_match('/\"(.*?)\"/miu', $strRecord, $matches);
+            if ($quotesResult) {
+                $content = preg_replace('/\s/', $spaceSubs, $matches[1]);
+                $strRecord = str_replace('"' . $matches[1] . '"', $content, $strRecord);
+            }
+
             $arRecord = preg_split('/\s/', $strRecord);
             $arRecord = array_filter($arRecord, fn($item) => !!$item);
             $arRecord = array_values($arRecord);
             $content = $arRecord[4];
             $content = str_replace($spaceSubs, " ", $content);
+
             $recordObj = new DnsRecordDto(
                 record_id: $recordId,
                 domain: $domain,

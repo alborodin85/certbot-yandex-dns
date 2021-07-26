@@ -3,13 +3,12 @@
 namespace It5\TestsQuick;
 
 use It5\CertbotYandexDns;
+use It5\CheckCertNeedUpdate\CertDomainsChecker;
 use It5\DebugLibs\DebugLib;
 use It5\LongProcesses\DnsParameterWaiter\WaiterSomeDnsRecords;
 use It5\ParametersParser\DomainsParametersRegistry;
 use It5\SystemDnsShell\DnsRecordDto;
-use It5\SystemDnsShell\DnsRecordsCollection;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
-use phpDocumentor\Reflection\Types\True_;
 use PHPUnit\Framework\TestCase;
 use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\Adapters\YandexApi\YandexDnsApi;
@@ -24,30 +23,73 @@ class CertbotYandexDnsTest extends TestCase
         $cliArgv = [__FILE__];
         $configAbsolutePath = __DIR__ . '/ParametersParser/DomainParametersStubs/domain-settings-stub.json';
         $logAbsolutePath = __DIR__ . 'test-app.log';
-        $object = CertbotYandexDns::singleton($cliArgv, $configAbsolutePath, $logAbsolutePath, Env::env()->yandexApiDelayMicroseconds);
+        $object = CertbotYandexDns::singleton(
+            $cliArgv,
+            $configAbsolutePath,
+            $logAbsolutePath,
+        );
 
-        $checker = $this->getMockBuilder(CertDeadlineChecker::class)->getMock();
-        $checker->expects($this->exactly(3))
-            ->method('check')
+        $deadlineChecker = $this->getMockBuilder(CertDeadlineChecker::class)->getMock();
+        $deadlineChecker->expects($this->exactly(3))
+            ->method('checkDeadline')
             ->withConsecutive(
                 ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 7],
                 ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', 14],
                 ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', 10],
             )
             ->will($this->onConsecutiveCalls(true, false, true));
-        $object->setDeadlineCheckerMock($checker);
+        $object->setDeadlineCheckerMock($deadlineChecker);
+
+        $subDomains1 = [
+            "it5.su",
+            "*.it5.su"
+        ];
+        $subDomains2 = [
+            "it5.team",
+            "*.it5.team"
+        ];
+        $subDomains3 = [
+            "s-dver.ru",
+            "*.s-dver.ru"
+        ];
+        $domainChecker = $this->getMockBuilder(CertDomainsChecker::class)->getMock();
+        $domainChecker->expects($this->exactly(3))
+            ->method('isDomainsChanged')
+            ->withConsecutive(
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains1],
+                ['/etc/letsencrypt/live/it5.su-se/fullchain.pem', $subDomains2],
+                ['/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem', $subDomains3],
+            )
+            ->will($this->onConsecutiveCalls(false, false, false));
+        $object->setDomainCheckerMock($domainChecker);
 
         $yandexDnsApi = $this
             ->getMockBuilder(YandexDnsApi::class)
             ->setConstructorArgs([Env::env()->yandexApiDelayMicroseconds])
             ->getMock();
-        $yandexDnsApi->expects($this->exactly(2))
+        $yandexDnsApi->expects($this->exactly(4))
             ->method('delete')
             ->withConsecutive(
                 ['it5.su', 'jkdfjkjkhjksdfjkgjksdfjkgf', '_acme-challenge', DnsRecordTypesEnum::TXT],
+                ['it5.su', 'jkdfjkjkhjksdfjkgjksdfjkgf', '_acme-challenge', DnsRecordTypesEnum::TXT],
+                ['s-dver.ru', 'jkdfjkjkhjksdfjkgjksdfjkgf', '_acme-challenge', DnsRecordTypesEnum::TXT],
                 ['s-dver.ru', 'jkdfjkjkhjksdfjkgjksdfjkgf', '_acme-challenge', DnsRecordTypesEnum::TXT],
             )
-            ->will($this->onConsecutiveCalls(0, 1));
+            ->will($this->onConsecutiveCalls(0, 1, 0, 1));
+
+        $createdRecord = new DnsRecordDto(
+            record_id: 1,
+            domain: 'domain',
+            subdomain: '_acme-challenge',
+            fqdn: '',
+            type: DnsRecordTypesEnum::TXT,
+            content: 'parameter-value',
+            priority: 1,
+            ttl: 21600,
+        );
+        $yandexDnsApi->expects($this->any())
+            ->method('create')
+            ->will($this->returnValue($createdRecord));
         $object->setYandexDnsApiMock($yandexDnsApi);
 
         $certbotDialog = $this->getMockBuilder(CertbotDialog::class)->getMock();
@@ -67,7 +109,7 @@ class CertbotYandexDnsTest extends TestCase
                 [$dialogDto, $domains[2]],
             )
             ->will($this->returnValue([
-                ['parameter-name' => 'parameter-value']
+                ['_acme-challenge' => 'parameter-value']
             ]));
         $certbotDialog->expects($this->exactly(2))
             ->method('closeDialog')

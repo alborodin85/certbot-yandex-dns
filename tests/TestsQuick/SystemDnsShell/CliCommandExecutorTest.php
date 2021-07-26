@@ -36,4 +36,16 @@ class CliCommandExecutorTest extends TestCase
 
         $this->assertTrue(true);
     }
+
+    public function testErrorCommand()
+    {
+        $executor = new CliCommandExecutor();
+        $command = 'ls /not_exists_folder';
+        $args = '';
+
+        $this->expectError();
+        $executor->getCommandResultString($command, $args);
+
+        $this->assertTrue(true);
+    }
 }

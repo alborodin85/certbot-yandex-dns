@@ -2,23 +2,36 @@
 
 namespace It5\SystemDnsShell;
 
+use It5\DebugLibs\DebugLib;
+use It5\Localization\Trans;
 use JetBrains\PhpStorm\Pure;
 use function PHPUnit\Framework\returnValue;
 
 class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
 {
     private int $index;
-    private array $collection;
+    private array $collection = [];
 
     public function __construct(DnsRecordDto ...$items)
     {
-        $this->collection = $items;
+        Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
+        $this->addSomeWithCheckUnique($items);
         $this->rewind();
     }
 
     public function add(DnsRecordDto ...$items): void
     {
-        $this->collection = array_merge($this->collection, $items);
+        $this->addSomeWithCheckUnique($items);
+    }
+
+    private function addSomeWithCheckUnique(array $arRecords)
+    {
+        foreach ($arRecords as $recordDto) {
+            if ($this->findByUuid($recordDto->uuid())) {
+                continue;
+            }
+            $this->collection[] = $recordDto;
+        }
     }
 
     public function rewind(): void
@@ -60,11 +73,17 @@ class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
     public function offsetSet($offset, $value): void
     {
         if (!($value instanceof DnsRecordDto)) {
-            throw new DnsRecordError('Некорректный тип элемента DnsRecordsCollection!');
+            throw new DnsRecordError(Trans::T('errors.invalid_type_for_collection'));
         }
         if (is_null($offset)) {
+            if ($this->findByUuid($value->uuid())) {
+                return;
+            }
             $this->collection[] = $value;
         } else {
+            if ($this->findByUuid($value->uuid())) {
+                throw new DnsRecordError('errors.adding_duplicate_to_collection', $offset);
+            }
             $this->collection[$offset] = $value;
         }
     }
@@ -84,16 +103,6 @@ class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
         return $this->collection;
     }
 
-    public function fromArray(array $arItems): self
-    {
-        $this->collection = [];
-        foreach ($arItems as $item) {
-            $this[] = $item;
-        }
-
-        return $this;
-    }
-
     public function filterAnd(string $subdomain, string $type, string $content): self
     {
         $arRecords = $this->toArray();
@@ -107,7 +116,25 @@ class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
             $arRecords = array_filter($arRecords, fn(DnsRecordDto $record) => $record->content == $content);
         }
 
-        $result = $this->fromArray($arRecords);
+        $result = new self(...$arRecords);
+
+        return $result;
+    }
+
+    public function findByUuid(string $uuid): DnsRecordDto | null
+    {
+        $foundItems = array_filter($this->collection, fn ($recordDto) => $recordDto->uuid() == $uuid);
+        $result = reset($foundItems) ?: null;
+
+        return $result;
+    }
+
+    public function getValuesContent(): array
+    {
+        $result = [];
+        foreach ($this->collection as $recordDto) {
+            $result[$recordDto->record_id] = $recordDto->content;
+        }
 
         return $result;
     }

@@ -7,12 +7,13 @@ use It5\ParametersParser\DomainParametersDto;
 
 class CommandBuilder
 {
-    const COMMAND_PATTERN = 'sudo certbot certonly --manual-public-ip-logging-ok --agree-tos --email %s --renew-by-default %s --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory %s';
+    const COMMAND_PATTERN = 'sudo certbot certonly --manual-public-ip-logging-ok --agree-tos --email %s --renew-by-default %s --manual --preferred-challenges dns-01 --server https://acme-v02.api.letsencrypt.org/directory %s %s';
 
     public function buildCommand(DomainParametersDto $parameters): string
     {
         $domains = '-d ' . implode(' -d ', $parameters->subDomains);
         $isDryRun = $parameters->dryRun ? '--dry-run' : '';
+        $isForce = '--force-renewal';
         $result = sprintf(self::COMMAND_PATTERN, $parameters->adminEmail, $domains, $isDryRun);
 
         return $result;
