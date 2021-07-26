@@ -16,11 +16,18 @@ class CertDeadlineChecker
     {
         $result = true;
 
-        if (file_exists($certPath)) {
-            $certDeadline = $this->getCertDeadlineString($certPath);
-            if (!$this->checkNeedUpdate($certDeadline, $criticalRemainingDays)) {
-                $result = false;
+        try {
+            $fileType = filetype($certPath);
+            if (!$fileType) {
+                return true;
             }
+        } catch (\Throwable) {
+            return true;
+        }
+
+        $certDeadline = $this->getCertDeadlineString($certPath);
+        if (!$this->checkNeedUpdate($certDeadline, $criticalRemainingDays)) {
+            $result = false;
         }
 
         return $result;
@@ -28,7 +35,7 @@ class CertDeadlineChecker
 
     private function getCertDeadlineString(string $certPath): string
     {
-        $commandResult = `openssl x509 -enddate -noout -in {$certPath}`;
+        $commandResult = `sudo openssl x509 -enddate -noout -in {$certPath}`;
         $commandResult = str_replace("\n", '', $commandResult);
         $commandResult = trim($commandResult);
         $commandResult = str_replace('notAfter=', '', $commandResult);

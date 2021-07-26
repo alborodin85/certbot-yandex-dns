@@ -12,11 +12,18 @@ class CertDomainsChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function checkDomainsChanged(string $certPath, array $subDomains): bool
+    public function isDomainsChanged(string $certPath, array $subDomains): bool
     {
-        $existDomains = $this->getCertDomains($certPath);
+        try {
+            $fileType = filetype($certPath);
+            if (!$fileType) {
+                return true;
+            }
+        } catch (\Throwable) {
+            return true;
+        }
 
-        DebugLib::dump($existDomains);
+        $existDomains = $this->getCertDomains($certPath);
 
         // Проверяем, что в конфиге не появились новые домены
         foreach ($subDomains as $newDomain) {
@@ -37,7 +44,7 @@ class CertDomainsChecker
 
     private function getCertDomains(string $certPath): array
     {
-        $commandResult = `openssl x509 -noout -in {$certPath} -ext subjectAltName`;
+        $commandResult = `sudo openssl x509 -noout -in {$certPath} -ext subjectAltName`;
 
         $matches = [];
         $parse_result = preg_match('/.*?(DNS:.*){1}.*/miu', $commandResult, $matches);
