@@ -18,9 +18,6 @@ class CertDeadlineChecker
 
         try {
             $fileType = filetype($certPath);
-            if (!$fileType) {
-                return true;
-            }
         } catch (\Throwable) {
             return true;
         }

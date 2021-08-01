@@ -23,8 +23,15 @@ class WaiterSomeDnsRecords
         $this->dnsShell = new SystemDnsShell();
     }
 
+    public function additionWaiting(int $additionWaitingSecs) {
+        sleep($additionWaitingSecs);
+    }
+
     public function waitingSomeParameters(DnsRecordsCollection $dnsRecordsCollection): bool
     {
+        if (!count($dnsRecordsCollection)) {
+            return false;
+        }
         $result = false;
         $startTime = time();
 

@@ -19,7 +19,7 @@ class RequestExecutorTest extends TestCase
 
     public function setUp(): void
     {
-        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
+        DebugLib::init();
         $this->executor = new RequestExecutor();
     }
 

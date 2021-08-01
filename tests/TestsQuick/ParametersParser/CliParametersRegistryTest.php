@@ -15,7 +15,7 @@ class CliParametersRegistryTest extends TestCase
 
     public function setUp(): void
     {
-        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
+        DebugLib::init();
         $this->cliArgv = [
             __FILE__,
             '--quiet',

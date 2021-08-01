@@ -17,10 +17,11 @@ class DebugLib
     private static self | null $instance;
 
     public static function init(
-        string $logFile = __DIR__ . 'log-path-need-define.log',
-        int $mode = self::MODE_WITH_OUTPUT
+        string $logFile = __DIR__ . '/log-path-need-define.log',
+        int $mode = self::MODE_WITH_OUTPUT,
+        int $logPermissions = 0775,
     ): self {
-        self::$instance = new self($logFile, $mode);
+        self::$instance = new self($logFile, $mode, $logPermissions);
 
         return self::$instance;
     }
@@ -42,9 +43,11 @@ class DebugLib
     private function __construct(
         public string $logFile,
         public int $mode,
+        int $logPermissions,
     )
     {
-        //
+        touch($this->logFile);
+        chmod($this->logFile, $logPermissions);
     }
 
     public static function ld(mixed $message, string $level = Logger::DEBUG): bool
@@ -56,9 +59,6 @@ class DebugLib
     {
         if ($this->mode < 2) {
             return false;
-        }
-        if (!$this->logFile) {
-            throw new DebugLibError('DebugLib::logFile not defined!');
         }
 
         $log = new Logger('name');

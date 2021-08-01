@@ -12,15 +12,17 @@ class CertDomainsChecker
         Trans::instance()->addPhrases(__DIR__ . '/localization/ru.php');
     }
 
-    public function isDomainsChanged(string $certPath, array $subDomains, bool $isSudoMode): bool
+    public function getSubdomainsChangesCounts(string $certPath, array $subDomains, bool $isSudoMode): array
     {
+        $isDomainsChanged = false;
+        $countAdded = 0;
+        $countDeleted = 0;
+
         try {
             $fileType = filetype($certPath);
-            if (!$fileType) {
-                return true;
-            }
         } catch (\Throwable) {
-            return true;
+            $isDomainsChanged = true;
+            return [$isDomainsChanged, $countAdded, $countDeleted];
         }
 
         $existDomains = $this->getCertDomains($certPath, $isSudoMode);
@@ -28,23 +30,24 @@ class CertDomainsChecker
         // Проверяем, что в конфиге не появились новые домены
         foreach ($subDomains as $newDomain) {
             if (!in_array($newDomain, $existDomains)) {
-                return true;
+                $isDomainsChanged = true;
+                $countAdded++;
             }
         }
 
         // Проверяем, что из конфига домены не удаляли
         foreach ($existDomains as $existDomain) {
             if (!in_array($existDomain, $subDomains)) {
-                return true;
+                $isDomainsChanged = true;
+                $countDeleted++;
             }
         }
 
-        return false;
+        return [$isDomainsChanged, $countAdded, $countDeleted];
     }
 
     private function getCertDomains(string $certPath, bool $isSudoMode): array
     {
-//        $commandPattern = "sudo openssl x509 -noout -in {$certPath} -ext subjectAltName";
         $commandPattern = "%s openssl x509 -noout -in %s -ext subjectAltName";
         $isSudoMode = $isSudoMode ? 'sudo ' : '';
         $command = sprintf($commandPattern, $isSudoMode, $certPath);

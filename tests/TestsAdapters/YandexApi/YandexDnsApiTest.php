@@ -31,7 +31,7 @@ class YandexDnsApiTest extends TestCase
 
     public function setUp(): void
     {
-        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
+        DebugLib::init();
         $strDnsData = file_get_contents(__DIR__ . '/settings.json');
         $arDnsData = json_decode($strDnsData, true);
         $this->domain = $arDnsData['domain'];
