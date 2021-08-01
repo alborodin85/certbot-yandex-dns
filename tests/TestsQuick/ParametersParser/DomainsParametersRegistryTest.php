@@ -15,7 +15,7 @@ class DomainsParametersRegistryTest extends TestCase
 
     public function setUp(): void
     {
-        DebugLib::init('', DebugLib::MODE_WITH_OUTPUT);
+        DebugLib::init();
         DomainsParametersRegistry::init(__DIR__ . '/DomainParametersStubs/domain-settings-stub.json');
         $this->collection = DomainsParametersRegistry::getCollection();
     }
@@ -48,7 +48,7 @@ class DomainsParametersRegistryTest extends TestCase
 
     public function testAbsentDomain()
     {
-        $domain = 'dver29spb.ru';
+        $domain = 's-dver29spb.ru';
         $this->expectExceptionMessage(Trans::T('errors.domain_absent', $domain));
         DomainsParametersRegistry::getParametersForDomain($domain);
     }

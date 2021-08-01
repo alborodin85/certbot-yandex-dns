@@ -3,6 +3,7 @@
 namespace It5\ParametersParser;
 
 use It5\DebugLibs\DebugLib;
+use It5\Env;
 use It5\Localization\Trans;
 
 class DomainsParametersRegistry
@@ -77,9 +78,10 @@ class DomainsParametersRegistry
         $isDryRun = false;
         $isForceRenewal = true;
         $isSudoMode = false;
-        $dnsParameterName = '_acme-challenge';
-        $criticalRemainingDays = 7;
+        $dnsParameterName = Env::env()->dnsParameterName;
+        $criticalRemainingDays = 15;
         $certPath = '';
+        $privKeyPath = '';
         foreach ($arSettings as $arDomainItem) {
             $domain = $arDomainItem['domain'] ?? $domain;
             $this->checkParam($domain, 'domain', $domain);
@@ -91,8 +93,9 @@ class DomainsParametersRegistry
             $this->checkParam($domain, 'yandexToken', $yandexToken);
             $certPath = $arDomainItem['certPath'] ?? $certPath;
             $this->checkParam($domain, 'certPath', $certPath);
+            $privKeyPath = $arDomainItem['privKeyPath'] ?? $privKeyPath;
+            $this->checkParam($domain, 'privKeyPath', $privKeyPath);
 
-            $dnsParameterName = $arDomainItem['dnsParameterName'] ?? $dnsParameterName;
             $criticalRemainingDays = $arDomainItem['criticalRemainingDays'] ?? $criticalRemainingDays;
             $isDryRun = $arDomainItem['isDryRun'] ?? $isDryRun;
             $isForceRenewal = $arDomainItem['isForceRenewal'] ?? $isForceRenewal;
@@ -104,9 +107,10 @@ class DomainsParametersRegistry
                 subDomains: $subDomains,
                 adminEmail: $adminEmail,
                 yandexToken: $yandexToken,
+                certPath: $certPath,
+                privKeyPath: $privKeyPath,
                 dnsParameterName: $dnsParameterName,
                 criticalRemainingDays: $criticalRemainingDays,
-                certPath: $certPath,
                 isDryRun: $isDryRun,
                 isForceRenewal: $isForceRenewal,
                 isSudoMode: $isSudoMode,

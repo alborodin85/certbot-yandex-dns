@@ -8,8 +8,8 @@
         "adminEmail": "admin@it5.su",
         "yandexToken": "jkdfjkjkhjksdfjkgjksdfjkgf",
         "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem",
+        "privKeyPath": "/etc/letsencrypt/live/it5.su-se/privkey.pem",
 
-        "dnsParameterName": "_acme-challenge",
         "criticalRemainingDays": 7,
         "isDryRun": false,
         "isForceRenewal": true,

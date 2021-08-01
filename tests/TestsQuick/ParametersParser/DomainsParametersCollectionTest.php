@@ -20,9 +20,11 @@ class DomainsParametersCollectionTest extends TestCase
             'subDomains' => ['subDomains'],
             'adminEmail' => 'adminEmail',
             'yandexToken' => 'yandexToken',
-            'criticalRemainingDays' => 7,
             'certPath' => 'certPath',
+            'privKeyPath' => 'privKeyPath',
+
             'dnsParameterName' => 'dnsParameterName',
+            'criticalRemainingDays' => 7,
             'isDryRun' => true,
             'isForceRenewal' => true,
             'isSudoMode' => true,
@@ -47,6 +49,7 @@ class DomainsParametersCollectionTest extends TestCase
             'adminEmail' => 'adminEmail',
             'yandexToken' => 'yandexToken',
             'certPath' => 'certPath',
+            'privKeyPath' => 'privKeyPath',
         ];
         $collection = new DomainsParametersCollection();
         $collection[] = new DomainParametersDto(...$dtoParams);

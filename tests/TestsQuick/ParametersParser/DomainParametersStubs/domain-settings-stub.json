@@ -8,6 +8,7 @@
         "adminEmail": "admin@it5.su",
         "yandexToken": "jkdfjkjkhjksdfjkgjksdfjkgf",
         "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem",
+        "privKeyPath": "/etc/letsencrypt/live/it5.su-se/privkey.pem",
 
         "dnsParameterName": "_acme-challenge",
         "criticalRemainingDays": 7,
@@ -22,7 +23,8 @@
             "*.it5.team"
         ],
         "criticalRemainingDays": 14,
-        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem"
+        "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem",
+        "privKeyPath": "/etc/letsencrypt/live/it5.su-se/privkey.pem"
     },
     {
         "domain": "s-dver.ru",
@@ -31,6 +33,17 @@
             "*.s-dver.ru"
         ],
         "criticalRemainingDays": 10,
-        "certPath": "/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem"
+        "certPath": "/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem",
+        "privKeyPath": "/etc/letsencrypt/live/s-dver.ru-se/privkey.pem"
+    },
+    {
+        "domain": "dver29spb.ru",
+        "subDomains": [
+            "dver29spb.ru",
+            "*.dver29spb.ru"
+        ],
+        "criticalRemainingDays": 11,
+        "certPath": "/etc/letsencrypt/live/dver29spb.ru-se/fullchain.pem",
+        "privKeyPath": "/etc/letsencrypt/live/dver29spb.ru-se/privkey.pem"
     }
 ]
