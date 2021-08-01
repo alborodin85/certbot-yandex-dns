@@ -9,6 +9,7 @@ use JetBrains\PhpStorm\Pure;
 class CertbotDialog
 {
     private CommandBuilder $commandBuilder;
+    private string $strLastCertbotAnswer;
 
     #[Pure]
     public function __construct()
@@ -36,54 +37,91 @@ class CertbotDialog
         return $dialogDto;
     }
 
-    public function getRequiredDnsRecords(DialogDto $dialogDto, DomainParametersDto $parametersDto): array
+    private function parseDnsRecordsRequestOutput(
+        DialogDto $dialogDto, DomainParametersDto $parametersDto, int $countRecords, bool $forceFinish
+    ): array
     {
         $dnsRecords = [];
-        for ($i = 1; $i <= count($parametersDto->subDomains); $i++) {
-            $endString = 'Before continuing, verify the record is deployed.';
-            $currString = '';
-            $fullString = '';
-            while (!str_contains($currString, $endString)) {
-                $currString = fgets($dialogDto->stdOutPipe);
-                $currString = trim($currString);
-                $fullString .= $currString . "\n";
-            }
+        $fullString = '';
+        for ($i = 1; $i <= $countRecords; $i++) {
+            DebugLib::ld('Ждем 3 сек, пока Certbot скажет, какую запись добавить...');
+            sleep(3);
+            $fullString = fread($dialogDto->stdOutPipe, 1024 * 10);
 
             DebugLib::ld('$fullString');
             DebugLib::ld($fullString);
 
-            $dnsParamName = $this->commandBuilder->retrieveDnsParameterName($fullString, $parametersDto);
-            $dnsParamValue = $this->commandBuilder->retrieveDnsParameterValue($fullString, $dnsParamName);
-            $dnsRecords[] = [
-                $dnsParamName => $dnsParamValue,
-            ];
-            if ($i != count($parametersDto->subDomains)) {
-                fwrite($dialogDto->stdInPipe, "\n");
-            } else {
+            try {
+                $dnsParamName = $this->commandBuilder->retrieveDnsParameterName($fullString, $parametersDto);
+                $dnsParamValue = $this->commandBuilder->retrieveDnsParameterValue($fullString, $dnsParamName);
+                $dnsRecords[] = [
+                    $dnsParamName => $dnsParamValue,
+                ];
+            } catch (CertbotDialogError) {
                 break;
             }
+
+            if (($i != $countRecords) || $forceFinish) {
+                fwrite($dialogDto->stdInPipe, "\n");
+            }
         }
+
+        $this->strLastCertbotAnswer = $fullString;
 
         return $dnsRecords;
     }
 
-    public function startCheckingAndGetResult(DialogDto $dialogDto)
+    public function getRequiredDnsRecordsCount(DialogDto $dialogDto, DomainParametersDto $parametersDto): int
     {
-        DebugLib::ld('Ждем 10 сек, пока пройдет процесс...');
-        $strCheckingResult = fread($dialogDto->stdOutPipe, 1024 * 10);
-        DebugLib::ld('$strCheckingResult-1');
-        DebugLib::ld($strCheckingResult);
+        $dnsRecords = $this
+            ->parseDnsRecordsRequestOutput($dialogDto, $parametersDto, count($parametersDto->subDomains), true);
+        $dnsRecordsCount = count($dnsRecords);
 
+        return $dnsRecordsCount;
+    }
+
+    public function getRequiredDnsRecords(DialogDto $dialogDto, DomainParametersDto $parametersDto, int $countRecords): array
+    {
+        $dnsRecords = $this
+            ->parseDnsRecordsRequestOutput($dialogDto, $parametersDto, $countRecords, false);
+
+        return $dnsRecords;
+    }
+
+    public function getResult(): DialogResultDto
+    {
+        $stringFromCertbotCli = $this->strLastCertbotAnswer;
+
+        $processResult = $this->commandBuilder->isCertbotResultOk($stringFromCertbotCli);
+        if ($processResult) {
+            [$certPath, $privKeyPath, $deadline] = $this->commandBuilder->retrieveNewCertPath($stringFromCertbotCli);
+        }
+
+        $result = new DialogResultDto(
+            $processResult, $certPath ?? '', $privKeyPath ?? '', $deadline ?? ''
+        );
+
+        return $result;
+    }
+
+    public function startCheckingAndGetResult(DialogDto $dialogDto): DialogResultDto
+    {
         DebugLib::ld('Отправляем последний Enter...');
         fwrite($dialogDto->stdInPipe, "\n");
 
-        DebugLib::ld('Ждем 30 сек, пока пройдет процесс...');
-        sleep(30);
+        DebugLib::ld('Ждем 10 сек, пока пройдет процесс...');
+        sleep(10);
         DebugLib::ld('Принимаем результат вывода...');
-        $strCheckingResult = fread($dialogDto->stdOutPipe, 1024 * 10);
+        $stringFromCertbotCli = fread($dialogDto->stdOutPipe, 1024 * 10);
 
-        DebugLib::ld('$strCheckingResult-2');
-        DebugLib::ld($strCheckingResult);
+        DebugLib::ld('$stringFromCertbotCli-2');
+        DebugLib::ld($stringFromCertbotCli);
+
+        $this->strLastCertbotAnswer = $stringFromCertbotCli;
+
+        $result = $this->getResult();
+
+        return $result;
     }
 
     public function closeDialog(DialogDto $dialogDto): void
