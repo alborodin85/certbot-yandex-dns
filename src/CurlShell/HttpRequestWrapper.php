@@ -3,7 +3,6 @@
 namespace It5\CurlShell;
 
 use It5\DebugLibs\DebugLib;
-use JetBrains\PhpStorm\Pure;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
 
 class HttpRequestWrapper
@@ -18,7 +17,6 @@ class HttpRequestWrapper
     public string $answer = '';
     private RequestExecutor $requestExecutor;
 
-    #[Pure]
     private function __construct()
     {
         $this->requestExecutor = new RequestExecutor();

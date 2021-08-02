@@ -2,8 +2,6 @@
 
 namespace It5\Adapters\CertsCopier;
 
-use It5\DebugLibs\DebugLib;
-
 class CertsCopier
 {
     public function copyCertAndKey(
@@ -18,18 +16,12 @@ class CertsCopier
         $certResult = true;
         $privKeyResult = true;
 
-//        DebugLib::dump($certToPath);
-//        DebugLib::dump($certFromPath);
         if ($certToPath != $certFromPath) {
             $certResult = $this->copyFileRecursive($certFromPath, $certToPath, $certPermissions);
         }
-//        DebugLib::dump($privKeyToPath);
-//        DebugLib::dump($privKeyFromPath);
         if ($privKeyToPath != $privKeyFromPath) {
             $privKeyResult = $this->copyFileRecursive($privKeyFromPath, $privKeyToPath, $privKeyPermissions);
         }
-
-//        DebugLib::dump('---------');
 
         $result = $certResult && $privKeyResult;
 

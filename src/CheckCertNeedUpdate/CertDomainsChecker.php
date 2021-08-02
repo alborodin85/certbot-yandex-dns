@@ -2,7 +2,6 @@
 
 namespace It5\CheckCertNeedUpdate;
 
-use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
 
 class CertDomainsChecker
@@ -58,7 +57,7 @@ class CertDomainsChecker
         $commandResult = `{$command}`;
 
         $matches = [];
-        $parse_result = preg_match('/.*?(DNS:.*){1}.*/miu', $commandResult, $matches);
+        $parse_result = preg_match('/.*?(DNS:.*).*/miu', $commandResult, $matches);
         if ($parse_result == 0) {
             throw new CheckCertNeedUpdateError(Trans::T('errors.define_domains_in_cert_error'));
         }

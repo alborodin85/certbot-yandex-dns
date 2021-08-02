@@ -2,7 +2,6 @@
 
 namespace It5\CheckCertNeedUpdate;
 
-use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
 
 class CertDeadlineChecker
@@ -36,7 +35,6 @@ class CertDeadlineChecker
 
     private function getCertDeadlineString(string $certPath, bool $isSudoMode): string
     {
-//        $commandPattern = "sudo openssl x509 -enddate -noout -in {$certPath}";
         $commandPattern = "%s openssl x509 -enddate -noout -in %s";
         $isSudoMode = $isSudoMode ? 'sudo ' : '';
         $command = sprintf($commandPattern, $isSudoMode, $certPath);

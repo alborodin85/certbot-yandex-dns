@@ -2,10 +2,8 @@
 
 namespace It5\SystemDnsShell;
 
-use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
 use JetBrains\PhpStorm\Pure;
-use function PHPUnit\Framework\returnValue;
 
 class DnsRecordsCollection implements \Iterator, \ArrayAccess, \Countable
 {

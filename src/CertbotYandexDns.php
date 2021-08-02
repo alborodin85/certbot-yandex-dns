@@ -94,7 +94,7 @@ class CertbotYandexDns
         DebugLib::printAndLog('Запуск процесса обновления сертификатов для ' . $this->configAbsolutePath);
         // Прочитать конфиг
         $domains = DomainsParametersRegistry::getCollection();
-        // Запустить обновление для каждого домена из конфига
+        // Запустить обновление для каждого домена из конфиг-файла
         foreach ($domains as $domainDto) {
             DebugLib::printAndLog('Начата процедура обновления для домена ' . $domainDto->domain . '...');
             $result = $this->updateCertForOneDomain($domainDto);
@@ -114,7 +114,7 @@ class CertbotYandexDns
         $strSubdomains = implode("; ", $domainDto->subDomains);
         // Проверить срок и состав и сертификата
         DebugLib::printAndLog('Проверка необходимости обновления для домена ' . $domainDto->domain . '...');
-        [$isDomainsChanged, $countAdded, $countDeleted] = $this->certDomainsChecker
+        [$isDomainsChanged] = $this->certDomainsChecker
             ->getSubdomainsChangesCounts($domainDto->certPath, $domainDto->subDomains, $domainDto->isSudoMode);
         if (!$isDomainsChanged) {
             $isPeriodCritical = $this->certDeadlineChecker
@@ -217,7 +217,6 @@ class CertbotYandexDns
         DnsRecordsCollection $createdRecords,
         DomainParametersDto $domainDto,
     ): void {
-
         foreach ($createdRecords as $recordDto) {
             $this->yandexDnsApi->delete(
                 $domainDto->domain, $domainDto->yandexToken, $recordDto->subdomain, DnsRecordTypesEnum::TXT, ''

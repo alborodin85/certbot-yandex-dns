@@ -2,8 +2,6 @@
 
 namespace It5\Localization;
 
-use It5\DebugLibs\DebugLib;
-
 class Trans
 {
     private static self $instance;

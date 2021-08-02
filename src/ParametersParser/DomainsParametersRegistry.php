@@ -2,7 +2,6 @@
 
 namespace It5\ParametersParser;
 
-use It5\DebugLibs\DebugLib;
 use It5\Env;
 use It5\Localization\Trans;
 
@@ -131,12 +130,10 @@ class DomainsParametersRegistry
         return $collection;
     }
 
-    private function checkParam(string $domain, string $paramName, string $paramValue): bool
+    private function checkParam(string $domain, string $paramName, string $paramValue): void
     {
         if (!$paramValue) {
             throw new DomainsParametersError(Trans::T('errors.domain_empty_param', $domain, $paramName));
         }
-
-        return true;
     }
 }

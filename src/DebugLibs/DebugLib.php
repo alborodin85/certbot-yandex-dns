@@ -91,17 +91,16 @@ class DebugLib
             return false;
         }
 
+        echo "\n";
         if (is_null($data2)) {
-            echo "\n";
             var_export($data1);
             echo "\n";
         } else {
-            echo "\n";
             echo "$data1:";
             echo "\n";
             var_export($data2);
-            echo "\n";
         }
+        echo "\n";
 
         return true;
     }

@@ -13,9 +13,9 @@ class WaiterSomeDnsRecords
 {
     private SystemDnsShell $dnsShell;
 
-    #[Pure] public function __construct(
-        private int $maxWaitingSpreadingSeconds,
-        private int $testingSpreadingIntervalSeconds,
+    public function __construct(
+        private int    $maxWaitingSpreadingSeconds,
+        private int    $testingSpreadingIntervalSeconds,
         private string $dnsServerIp,
     )
     {
@@ -23,7 +23,8 @@ class WaiterSomeDnsRecords
         $this->dnsShell = new SystemDnsShell();
     }
 
-    public function additionWaiting(int $additionWaitingSecs) {
+    public function additionWaiting(int $additionWaitingSecs)
+    {
         sleep($additionWaitingSecs);
     }
 
@@ -45,12 +46,10 @@ class WaiterSomeDnsRecords
                 break;
             }
             foreach ($dnsRecordsCollection as $recordDto) {
-
-//                DebugLib::dump('$recordDto', $this->recordUuid($recordDto));
-
                 if ($arParamsResults[$this->recordUuid($recordDto)]) {
                     continue;
                 }
+
                 $recordsCollection = $this->dnsShell->getDnsParameterValues(
                     $recordDto->domain,
                     $recordDto->subdomain,
@@ -58,23 +57,17 @@ class WaiterSomeDnsRecords
                     $this->dnsServerIp
                 );
 
-//                DebugLib::dump('$recordsCollection', $recordsCollection);
-
                 $correctRecords = $recordsCollection->filterAnd(
                     $recordDto->subdomain,
                     $recordDto->type,
                     $recordDto->content,
                 );
 
-//                DebugLib::dump('$correctRecords', $correctRecords);
-
                 if (count($correctRecords)) {
                     DebugLib::printAndLog(Trans::T('record_appeared', $recordDto->subdomain, $recordDto->content));
                     $arParamsResults[$this->recordUuid($recordDto)] = true;
                 }
             }
-
-//            DebugLib::dump('$arParamsResults', $arParamsResults);
 
             if (!in_array(false, $arParamsResults)) {
                 $result = true;
@@ -88,7 +81,7 @@ class WaiterSomeDnsRecords
 
     private function recordUuid(DnsRecordDto $recordDto): string
     {
-        $result = $recordDto->subdomain . '_' . $recordDto->type . '_' .$recordDto->content;
+        $result = $recordDto->subdomain . '_' . $recordDto->type . '_' . $recordDto->content;
 
         return $result;
     }

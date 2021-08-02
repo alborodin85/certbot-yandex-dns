@@ -42,20 +42,9 @@ class CliAnswersParser
 
         $dnsParamValue = '';
         foreach ($matches[1] as $foundedRow) {
-//            if (str_contains($foundedRow, $dnsParamName)) {
-//                continue;
-//            }
-//            if (!$foundedRow) {
-//                continue;
-//            }
             $dnsParamValue = $foundedRow;
             break;
         }
-
-//        if (!$dnsParamValue) {
-//            throw new CertbotDialogError('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
-//        }
-
         return $dnsParamValue;
     }
 

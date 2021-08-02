@@ -2,16 +2,14 @@
 
 namespace It5\SystemDnsShell;
 
-use It5\DebugLibs\DebugLib;
 use JetBrains\PhpStorm\Pure;
 
 class SystemDnsShell
 {
     private CliCommandExecutor $commandExecutor;
 
-    #[Pure] public function __construct(
-        //
-    ) {
+    #[Pure] public function __construct()
+    {
         $this->commandExecutor = new CliCommandExecutor();
     }
 
@@ -25,7 +23,8 @@ class SystemDnsShell
         string $subdomain,
         string $type,
         string $dnsServerIp = ''
-    ): DnsRecordsCollection {
+    ): DnsRecordsCollection
+    {
         $recordsCollection = new DnsRecordsCollection();
         $fullDomain = $domain;
         if ($subdomain != '@') {

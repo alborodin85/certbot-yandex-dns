@@ -2,8 +2,6 @@
 
 namespace It5\SystemDnsShell;
 
-use It5\DebugLibs\DebugLib;
-
 class CliCommandExecutor
 {
     public function getCommandResultArray(string $command, string $args): array
