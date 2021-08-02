@@ -1,6 +1,6 @@
 <?php
 
-namespace CurlShell;
+namespace It5\TestsQuick\CurlShell;
 
 use It5\CurlShell\HttpRequestWrapper;
 use It5\Adapters\HttpRequestExecutor\RequestExecutor;
@@ -51,7 +51,7 @@ class HttpRequestWrapperTest extends TestCase
 
         $executor = $this->getWrapperMock($url, RequestExecutor::METHOD_GET, [], [], $responseBody);
         HttpRequestWrapper::instance()->replaceExecutor($executor);
-        $strResult = HttpRequestWrapper::response($url, RequestExecutor::METHOD_GET, [], [],);
+        $strResult = HttpRequestWrapper::response($url, RequestExecutor::METHOD_GET, [], []);
 
         $correctArBody = array (
             'SIMPLE_STR' => "any text",

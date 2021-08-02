@@ -4,7 +4,6 @@ namespace It5\TestsQuick\SystemDnsShell;
 
 use It5\DebugLibs\DebugLib;
 use It5\SystemDnsShell\CliCommandExecutor;
-use It5\SystemDnsShell\SystemDnsShellError;
 use PHPUnit\Framework\TestCase;
 
 class CliCommandExecutorTest extends TestCase

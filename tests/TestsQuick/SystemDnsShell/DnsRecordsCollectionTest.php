@@ -4,10 +4,8 @@ namespace It5\TestsQuick\SystemDnsShell;
 
 use It5\Adapters\CertbotDialog\DialogDto;
 use It5\DebugLibs\DebugLib;
-use It5\Localization\Trans;
 use It5\SystemDnsShell\DnsRecordDto;
 use It5\SystemDnsShell\DnsRecordsCollection;
-use It5\SystemDnsShell\DnsRecordTypesEnum;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 

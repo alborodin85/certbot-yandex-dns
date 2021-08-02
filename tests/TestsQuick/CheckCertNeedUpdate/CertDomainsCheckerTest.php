@@ -26,17 +26,18 @@ class CertDomainsCheckerTest extends TestCase
             0 => 's-tsk.ru',
             1 => '*.s-tsk.ru',
         ];
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($this->mainCertPath, $subDomains, true);
 
         $this->assertFalse($isDomainsChanged);
     }
 
-    public function testDeleted() {
+    public function testDeleted()
+    {
         $subDomains = [
             0 => 's-tsk.ru',
         ];
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($this->mainCertPath, $subDomains, true);
 
         $this->assertTrue($isDomainsChanged);
@@ -49,7 +50,7 @@ class CertDomainsCheckerTest extends TestCase
             1 => '*.s-tsk.ru',
             2 => '*.ady.s-tsk.ru',
         ];
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($this->mainCertPath, $subDomains, true);
 
         $this->assertTrue($isDomainsChanged);
@@ -65,11 +66,11 @@ class CertDomainsCheckerTest extends TestCase
     public function testCertAbsent()
     {
         $certPath = __DIR__ . '/absent-file.txt';
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($certPath, [], true);
         $this->assertTrue($isDomainsChanged);
 
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($certPath, [], false);
         $this->assertTrue($isDomainsChanged);
     }
@@ -77,7 +78,7 @@ class CertDomainsCheckerTest extends TestCase
     public function testNotSudoFile()
     {
         $certPath = '/etc/letsencrypt/live/it5.su/fullchain2.pem';
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($certPath, [], false);
         $this->assertTrue($isDomainsChanged);
     }
@@ -86,14 +87,13 @@ class CertDomainsCheckerTest extends TestCase
     {
         $this->expectExceptionMessage(Trans::T('errors.define_domains_in_cert_error'));
         $certPath = '/etc/letsencrypt/live/it5.su/fullchain.pem';
-        [$isDomainsChanged, $countAdded, $countDeleted] =
-            $this->checker->getSubdomainsChangesCounts($certPath, [], false);
+        $this->checker->getSubdomainsChangesCounts($certPath, [], false);
     }
 
     public function testSudoFile()
     {
         $certPath = '/etc/letsencrypt/live/it5.su/fullchain2.pem';
-        [$isDomainsChanged, $countAdded, $countDeleted] =
+        [$isDomainsChanged] =
             $this->checker->getSubdomainsChangesCounts($certPath, [], false);
         $this->assertTrue($isDomainsChanged);
     }
@@ -102,7 +102,6 @@ class CertDomainsCheckerTest extends TestCase
     {
         $this->expectExceptionMessage(Trans::T('errors.define_domains_in_cert_error'));
         $certPath = __DIR__ . '/notCert.txt';
-        [$isDomainsChanged, $countAdded, $countDeleted] =
-            $this->checker->getSubdomainsChangesCounts($certPath, [], false);
+        $this->checker->getSubdomainsChangesCounts($certPath, [], false);
     }
 }

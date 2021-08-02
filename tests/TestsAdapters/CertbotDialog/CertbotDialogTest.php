@@ -42,8 +42,6 @@ class CertbotDialogTest extends TestCase
         $this->dialogObject->getRequiredDnsRecords($dialogDto, $parameters, count($parameters->subDomains));
         $result = $this->dialogObject->startCheckingAndGetResult($dialogDto);
 
-        DebugLib::dump($result);
-
         $this->assertFalse($result->isOk);
     }
 
@@ -62,7 +60,7 @@ class CertbotDialogTest extends TestCase
         $correctPattern = Env::env()->certbotCommandPattern;
         Env::env()->certbotCommandPattern = 'ls';
         $dialogDto = $this->dialogObject->openDialog($parameters, DebugLib::singleton()->logFile);
-        $result = $this->dialogObject->getRequiredDnsRecords($dialogDto, $parameters, count($parameters->subDomains));
+        $this->dialogObject->getRequiredDnsRecords($dialogDto, $parameters, count($parameters->subDomains));
         Env::env()->certbotCommandPattern = $correctPattern;
 
         $this->assertTrue(true);

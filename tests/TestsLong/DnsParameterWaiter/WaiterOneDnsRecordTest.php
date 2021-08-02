@@ -19,7 +19,7 @@ class WaiterOneDnsRecordTest  extends TestCase
     {
         DebugLib::init();
 
-        // Чтобы тестировать необходимо заполнить settings.json по образцу settings.example.json!
+        // Чтобы тестировать, необходимо заполнить settings.json по образцу settings.example.json!
         $settings = json_decode(file_get_contents(__DIR__ . "/settings.json"), true);
         $this->domain = $settings['domain'];
         $this->token = $settings['token'];

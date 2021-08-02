@@ -8,23 +8,24 @@ use Monolog\Test\TestCase;
 
 class CertsCopierTest extends TestCase
 {
-    private $normalFromCert = __DIR__ . '/from/normalFromCert';
-    private $errorFromCert = __DIR__ . '/from/errorFromCert';
-    private $normalToCert = __DIR__ . '/to/normalToCert';
-    private $certPerms = "0770";
+    private string $normalFromCert = __DIR__ . '/from/normalFromCert';
+    private string $errorFromCert = __DIR__ . '/from/errorFromCert';
+    private string $normalToCert = __DIR__ . '/to/normalToCert';
+    private string $certPerms = "0770";
 
-    private $normalFromPrivKey = __DIR__ . '/from/normalFromPrivKey';
-    private $errorFromPrivKey = __DIR__ . '/from/errorFromPrivKey';
-    private $normalToPrivKey = __DIR__ . '/to/normalToPrivKey';
-    private $privKeyPerms = "0750";
+    private string $normalFromPrivKey = __DIR__ . '/from/normalFromPrivKey';
+    private string $errorFromPrivKey = __DIR__ . '/from/errorFromPrivKey';
+    private string $normalToPrivKey = __DIR__ . '/to/normalToPrivKey';
+    private string $privKeyPerms = "0750";
 
     private CertsCopier $certsCopier;
-    
+
     public function setUp(): void
     {
         DebugLib::init();
         $this->certsCopier = new CertsCopier();
     }
+
     public function tearDown(): void
     {
         if (is_file($this->normalToCert)) {
@@ -79,7 +80,7 @@ class CertsCopierTest extends TestCase
 
 
     }
-    
+
     public function testNormalCert()
     {
         $result = $this->certsCopier->copyCertAndKey(
@@ -99,5 +100,5 @@ class CertsCopierTest extends TestCase
 
         $this->assertFalse($result);
     }
-    
+
 }

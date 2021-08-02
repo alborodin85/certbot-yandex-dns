@@ -1,9 +1,8 @@
 <?php
 
-namespace Localization;
+namespace It5\TestsQuick\Localization;
 
 use It5\Localization\Trans;
-use phpDocumentor\Reflection\Types\This;
 use PHPUnit\Framework\TestCase;
 
 class TransTest extends TestCase

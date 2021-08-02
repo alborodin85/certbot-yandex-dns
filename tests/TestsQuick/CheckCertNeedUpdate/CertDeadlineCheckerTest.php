@@ -3,7 +3,6 @@
 namespace It5\TestsQuick\CheckCertNeedUpdate;
 
 use It5\CheckCertNeedUpdate\CertDeadlineChecker;
-use It5\CheckCertNeedUpdate\CheckCertNeedUpdateError;
 use It5\DebugLibs\DebugLib;
 use It5\Localization\Trans;
 use PHPUnit\Framework\TestCase;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DebugLibs;
+namespace It5\TestsQuick\DebugLibs;
 
 use It5\DebugLibs\DebugLib;
 use PHPUnit\Framework\TestCase;

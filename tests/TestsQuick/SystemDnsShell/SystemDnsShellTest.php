@@ -3,7 +3,6 @@
 namespace It5\TestsQuick\SystemDnsShell;
 
 use It5\DebugLibs\DebugLib;
-use It5\Env;
 use It5\SystemDnsShell\CliCommandExecutor;
 use It5\SystemDnsShell\DnsRecordTypesEnum;
 use It5\SystemDnsShell\SystemDnsShell;

@@ -1,6 +1,6 @@
 <?php
 
-namespace ParametersParser;
+namespace It5\TestsQuick\ParametersParser;
 
 use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
