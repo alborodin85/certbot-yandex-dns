@@ -10,3 +10,4 @@ index.php
 !*/index.php
 domains-settings
 .phpunit.result.cache
+.run

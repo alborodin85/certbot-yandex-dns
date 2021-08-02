@@ -4,7 +4,7 @@ namespace It5\TestsQuick;
 
 use It5\Adapters\CertbotDialog\DialogResultDto;
 use It5\CertbotYandexDns;
-use It5\CertsCopier\CertsCopier;
+use It5\Adapters\CertsCopier\CertsCopier;
 use It5\CheckCertNeedUpdate\CertDomainsChecker;
 use It5\DebugLibs\DebugLib;
 use It5\LongProcesses\DnsParameterWaiter\WaiterSomeDnsRecords;
@@ -187,6 +187,34 @@ class CertbotYandexDnsTest extends TestCase
         $certsCopier = $this
             ->getMockBuilder(CertsCopier::class)
             ->getMock();
+        $certsCopier->expects($this->exactly(2))
+            ->method('copyCertAndKey')
+            ->withConsecutive(
+                [
+                    'certPathResult',
+                    '/etc/letsencrypt/live/it5.su-se/fullchain.pem',
+                    '0770',
+                    'privKeyResult',
+                    '/etc/letsencrypt/live/it5.su-se/privkey.pem',
+                    '0770',
+                ],
+                [
+                    'certPathResult',
+                    '/etc/letsencrypt/live/s-dver.ru-se/fullchain.pem',
+                    '0770',
+                    'privKeyResult',
+                    '/etc/letsencrypt/live/s-dver.ru-se/privkey.pem',
+                    '0770',
+                ],
+                [
+                    'certPathResult',
+                    '/etc/letsencrypt/live/dver29spb.ru-se/fullchain.pem',
+                    '0770',
+                    'privKeyResult',
+                    '/etc/letsencrypt/live/dver29spb.ru-se/privkey.pem',
+                    '0770',
+                ],
+            );
 
         return $certsCopier;
     }

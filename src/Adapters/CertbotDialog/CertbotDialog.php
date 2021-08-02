@@ -3,23 +3,27 @@
 namespace It5\Adapters\CertbotDialog;
 
 use It5\DebugLibs\DebugLib;
+use It5\Env;
 use It5\ParametersParser\DomainParametersDto;
 use JetBrains\PhpStorm\Pure;
 
 class CertbotDialog
 {
     private CommandBuilder $commandBuilder;
+    private CliAnswersParser $answersParser;
     private string $strLastCertbotAnswer;
 
     #[Pure]
     public function __construct()
     {
         $this->commandBuilder = new CommandBuilder();
+        $this->answersParser = new CliAnswersParser();
     }
 
     public function openDialog(DomainParametersDto $parametersDto, string $logFile): DialogDto
     {
-        $command = $this->commandBuilder->buildCommand($parametersDto);
+        $commandPattern = Env::env()->certbotCommandPattern;
+        $command = $this->commandBuilder->buildCommand($parametersDto, $commandPattern);
 
         $spec = [
             ['pipe', 'r'],          // stdin
@@ -52,8 +56,8 @@ class CertbotDialog
             DebugLib::ld($fullString);
 
             try {
-                $dnsParamName = $this->commandBuilder->retrieveDnsParameterName($fullString, $parametersDto);
-                $dnsParamValue = $this->commandBuilder->retrieveDnsParameterValue($fullString, $dnsParamName);
+                $dnsParamName = $this->answersParser->retrieveDnsParameterName($fullString, $parametersDto);
+                $dnsParamValue = $this->answersParser->retrieveDnsParameterValue($fullString, $dnsParamName);
                 $dnsRecords[] = [
                     $dnsParamName => $dnsParamValue,
                 ];
@@ -92,9 +96,10 @@ class CertbotDialog
     {
         $stringFromCertbotCli = $this->strLastCertbotAnswer;
 
-        $processResult = $this->commandBuilder->isCertbotResultOk($stringFromCertbotCli);
+        $processResult = $this->answersParser->isCertbotResultOk($stringFromCertbotCli);
+        // TODO: Переработать, чтобы протестировать строку
         if ($processResult) {
-            [$certPath, $privKeyPath, $deadline] = $this->commandBuilder->retrieveNewCertPath($stringFromCertbotCli);
+            [$certPath, $privKeyPath, $deadline] = $this->answersParser->retrieveNewCertPath($stringFromCertbotCli);
         }
 
         $result = new DialogResultDto(

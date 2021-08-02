@@ -21,31 +21,81 @@ class HttpRequestWrapperTest extends TestCase
         DebugLib::init();
     }
 
+    public function testReplaceEndsOfString()
+    {
+        $source = "vasa\r\npeta\r\n";
+        $correct = "vasa\r\npeta\r\n";
+        $result = HttpRequestWrapper::instance()->replaceEndsOfString($source);
+        $this->assertEquals($correct, $result);
+
+        $source = "vasa\rpeta\r";
+        $correct = "vasa\r\npeta\r\n";
+        $result = HttpRequestWrapper::instance()->replaceEndsOfString($source);
+        $this->assertEquals($correct, $result);
+
+        $source = "vasa\npeta\n";
+        $correct = "vasa\r\npeta\r\n";
+        $result = HttpRequestWrapper::instance()->replaceEndsOfString($source);
+        $this->assertEquals($correct, $result);
+
+        $source = "vasa and peta";
+        $correct = "vasa and peta";
+        $result = HttpRequestWrapper::instance()->replaceEndsOfString($source);
+        $this->assertEquals($correct, $result);
+    }
+
+    public function testSimpleString()
+    {
+        $url = self::TEST_HOST . '/CurlShell/RequestExecutorTest/';
+        $responseBody = file_get_contents(__DIR__ . "/response-stubs/simple-string.txt");
+
+        $executor = $this->getWrapperMock($url, RequestExecutor::METHOD_GET, [], [], $responseBody);
+        HttpRequestWrapper::instance()->replaceExecutor($executor);
+        $strResult = HttpRequestWrapper::response($url, RequestExecutor::METHOD_GET, [], [],);
+
+        $correctArBody = array (
+            'SIMPLE_STR' => "any text",
+        );
+        $correctRawBody = "any text";
+        $correctArHeaders = array (
+            'Date' => 'Sun, 01 Aug 2021 14:29:22 GMT',
+            'Server' => 'Apache',
+            'Vary' => 'Accept-Encoding',
+            'Transfer-Encoding' => 'chunked',
+            'Content-Type' => 'text/html; charset=UTF-8',
+        );
+
+        $this->assertEquals($correctArBody, $strResult->arBody);
+        $this->assertEquals($correctRawBody, $strResult->rawBody);
+        $this->assertEquals($correctArHeaders, $strResult->arHeaders);
+    }
+
     public function testDump()
     {
         $url = self::TEST_HOST . '/CurlShell/RequestExecutorTest/';
         $constraint = $this->identicalTo([$this->testParameterValue, $this->testHeaderValue]);
+        $responseBody = file_get_contents(__DIR__ . "/response-stubs/normal-response.txt");
 
-        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_GET, [], []);
+        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_GET, [], [], $responseBody);
         $this->assertThat($result, $constraint);
 
-        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_PATCH, [], []);
+        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_PATCH, [], [], $responseBody);
         $this->assertThat($result, $constraint);
 
-        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_DELETE, [], []);
+        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_DELETE, [], [], $responseBody);
         $this->assertThat($result, $constraint);
 
-        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_POST, [], []);
+        $result = $this->getTestDumpResult($url, RequestExecutor::METHOD_POST, [], [], $responseBody);
         $this->assertThat($result, $constraint);
     }
 
-    private function getTestDumpResult(string $url, string $method, array $parameters, array $headers): array
-    {
-        $responseBody = file_get_contents(__DIR__ . "/response-stubs/normal-response.txt");
+    private function getWrapperMock(
+        string $url, string $method, array $parameters, array $headers, string $responseBody
+    ):RequestExecutor {
         $executor = $this->getMockBuilder(RequestExecutor::class)->getMock();
         HttpRequestWrapper::instance()->replaceExecutor($executor);
         $classMethod = 'makeUrlRequest';
-        if (in_array($method, [RequestExecutor::METHOD_POST])) {
+        if ($method == RequestExecutor::METHOD_POST) {
             $classMethod = 'makeDataRequest';
         }
         $executor
@@ -53,6 +103,15 @@ class HttpRequestWrapperTest extends TestCase
             ->method($classMethod)
             ->with(...[$url, $method, $parameters, $headers])
             ->will($this->returnValue($responseBody));
+
+        return $executor;
+    }
+
+    private function getTestDumpResult(
+        string $url, string $method, array $parameters, array $headers, string $responseBody
+    ): array {
+        $executor = $this->getWrapperMock($url, $method, $parameters, $headers, $responseBody);
+        HttpRequestWrapper::instance()->replaceExecutor($executor);
 
         ob_start();
         $result = HttpRequestWrapper::dump($url, $method, $parameters, $headers);
@@ -117,7 +176,7 @@ class HttpRequestWrapperTest extends TestCase
 
         $responseBody = "headers \n\n $correctString";
         $result = $this->getResultForParseResponse($responseBody, $url, $method, $parameters, $headers);
-        $this->assertEquals($correctString, $result->arBody[0]);
+        $this->assertEquals($correctString, $result->arBody['SIMPLE_STR']);
         $this->assertEquals($correctString, $result->rawBody);
         $this->assertEquals('headers', $result->rawHeaders);
     }

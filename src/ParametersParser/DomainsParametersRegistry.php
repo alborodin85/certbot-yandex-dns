@@ -81,7 +81,10 @@ class DomainsParametersRegistry
         $dnsParameterName = Env::env()->dnsParameterName;
         $criticalRemainingDays = 15;
         $certPath = '';
+        $certPermissions = '';
         $privKeyPath = '';
+        $privKeyPermissions = '';
+
         foreach ($arSettings as $arDomainItem) {
             $domain = $arDomainItem['domain'] ?? $domain;
             $this->checkParam($domain, 'domain', $domain);
@@ -93,8 +96,12 @@ class DomainsParametersRegistry
             $this->checkParam($domain, 'yandexToken', $yandexToken);
             $certPath = $arDomainItem['certPath'] ?? $certPath;
             $this->checkParam($domain, 'certPath', $certPath);
+            $certPermissions = $arDomainItem['certPermissions'] ?? $certPermissions;
+            $this->checkParam($domain, 'certPermissions', $certPermissions);
             $privKeyPath = $arDomainItem['privKeyPath'] ?? $privKeyPath;
             $this->checkParam($domain, 'privKeyPath', $privKeyPath);
+            $privKeyPermissions = $arDomainItem['privKeyPermissions'] ?? $privKeyPermissions;
+            $this->checkParam($domain, 'privKeyPermissions', $privKeyPermissions);
 
             $criticalRemainingDays = $arDomainItem['criticalRemainingDays'] ?? $criticalRemainingDays;
             $isDryRun = $arDomainItem['isDryRun'] ?? $isDryRun;
@@ -108,7 +115,9 @@ class DomainsParametersRegistry
                 adminEmail: $adminEmail,
                 yandexToken: $yandexToken,
                 certPath: $certPath,
+                certPermissions: $certPermissions,
                 privKeyPath: $privKeyPath,
+                privKeyPermissions: $privKeyPermissions,
                 dnsParameterName: $dnsParameterName,
                 criticalRemainingDays: $criticalRemainingDays,
                 isDryRun: $isDryRun,

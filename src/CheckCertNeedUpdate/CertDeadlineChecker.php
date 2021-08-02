@@ -18,6 +18,10 @@ class CertDeadlineChecker
 
         try {
             $fileType = filetype($certPath);
+            // TODO: Тестируется на реальном пути для сертификата Certbot
+            if (!$fileType) {
+                return true;
+            }
         } catch (\Throwable) {
             return true;
         }

@@ -1,6 +1,8 @@
 <?php
 
-namespace It5\CertsCopier;
+namespace It5\Adapters\CertsCopier;
+
+use It5\DebugLibs\DebugLib;
 
 class CertsCopier
 {
@@ -16,12 +18,18 @@ class CertsCopier
         $certResult = true;
         $privKeyResult = true;
 
+//        DebugLib::dump($certToPath);
+//        DebugLib::dump($certFromPath);
         if ($certToPath != $certFromPath) {
             $certResult = $this->copyFileRecursive($certFromPath, $certToPath, $certPermissions);
         }
+//        DebugLib::dump($privKeyToPath);
+//        DebugLib::dump($privKeyFromPath);
         if ($privKeyToPath != $privKeyFromPath) {
             $privKeyResult = $this->copyFileRecursive($privKeyFromPath, $privKeyToPath, $privKeyPermissions);
         }
+
+//        DebugLib::dump('---------');
 
         $result = $certResult && $privKeyResult;
 
@@ -33,10 +41,11 @@ class CertsCopier
         $result = true;
         try {
             if (!is_dir(dirname($to))) {
-                mkdir(dirname($to), $permissions, true);
+                mkdir(dirname($to), octdec($permissions), true);
+                chmod(dirname($to), octdec($permissions));
             }
             copy($from, $to);
-            chmod($to, $permissions);
+            chmod($to, octdec($permissions));
         } catch (\Exception) {
             $result = false;
         }

@@ -23,6 +23,20 @@ class RequestExecutorTest extends TestCase
         $this->executor = new RequestExecutor();
     }
 
+    public function testGetSimpleString()
+    {
+        $url = self::TEST_HOST . '/CurlShell/RequestExecutorTest/string-test.php';
+
+        $parameters = [$this->testParameterName => $this->testParameterValue];
+        $headers = [$this->testHeaderName => $this->testHeaderValue];
+        $method = RequestExecutor::METHOD_GET;
+        $result = $this->executor->makeUrlRequest($url, $method, $parameters, $headers);
+
+        file_put_contents(__DIR__ . '/simple-string.txt', $result);
+
+        self::assertTrue(true);
+    }
+
     public function testMakeUrlRequest()
     {
         $url = self::TEST_HOST . '/CurlShell/RequestExecutorTest/';

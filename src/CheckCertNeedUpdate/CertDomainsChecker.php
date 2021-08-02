@@ -20,6 +20,10 @@ class CertDomainsChecker
 
         try {
             $fileType = filetype($certPath);
+            // TODO: Тестируется на реальном пути для сертификата Certbot
+            if (!$fileType) {
+                return [$isDomainsChanged, $countAdded, $countDeleted];
+            }
         } catch (\Throwable) {
             $isDomainsChanged = true;
             return [$isDomainsChanged, $countAdded, $countDeleted];

@@ -4,7 +4,7 @@ namespace It5;
 
 use It5\Adapters\CertbotDialog\CertbotDialog;
 use It5\Adapters\CertbotDialog\DialogResultDto;
-use It5\CertsCopier\CertsCopier;
+use It5\Adapters\CertsCopier\CertsCopier;
 use It5\CheckCertNeedUpdate\CertDeadlineChecker;
 use It5\CheckCertNeedUpdate\CertDomainsChecker;
 use It5\Localization\Trans;
@@ -199,10 +199,11 @@ class CertbotYandexDns
 
         if ($processResult->isOk) {
             $certPathsData = [
-                $processResult->certPath, $domainDto->certPath, $processResult->privKeyPath, $domainDto->certPath
+                $processResult->certPath, $domainDto->certPath, $domainDto->certPermissions,
+                $processResult->privKeyPath, $domainDto->privKeyPath, $domainDto->privKeyPermissions,
             ];
             $this->certsCopier->copyCertAndKey(...$certPathsData);
-            $message = "Созданы сертификат ({$processResult->certPath}) и ключ ({$processResult->privKeyPath}) для домена {$domainDto->domain} ($strSubdomains)";
+            $message = "Созданы сертификат ({$domainDto->certPath}) и ключ ({$domainDto->privKeyPath}) для домена {$domainDto->domain} ($strSubdomains)";
             DebugLib::printAndLog($message);
         } else {
             DebugLib::printAndLog('Не удалось получить/обновить сертификат...');

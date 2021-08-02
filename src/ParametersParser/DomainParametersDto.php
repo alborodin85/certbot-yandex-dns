@@ -11,7 +11,9 @@ class DomainParametersDto
         public string $adminEmail,
         public string $yandexToken,
         public string $certPath,
+        public string $certPermissions,
         public string $privKeyPath,
+        public string $privKeyPermissions,
 
         public string $dnsParameterName = '_acme-challenge',
         public int $criticalRemainingDays = 15,

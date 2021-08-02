@@ -10,8 +10,6 @@ use PHPUnit\Framework\TestCase;
 
 class CommandBuilderTest extends TestCase
 {
-    private CommandBuilder $commandBuilder;
-
     private array $arParams = [
         'id' => 1,
         'domain' => 'it5.su',
@@ -19,7 +17,9 @@ class CommandBuilderTest extends TestCase
         'adminEmail' => 'vasa@mail.ru',
         'yandexToken' => 'yandexToken',
         'certPath' => '/etc/letsencrypt/live/it5.su/fullchain.pem',
+        'certPermissions' => '0750',
         'privKeyPath' => '/etc/letsencrypt/live/it5.su/fullchain.pem',
+        'privKeyPermissions' => '0070',
 
         'criticalRemainingDays' => 7,
         'dnsParameterName' => '_acme-challenge',
@@ -27,6 +27,8 @@ class CommandBuilderTest extends TestCase
         'isForceRenewal' => true,
         'isSudoMode' => true,
     ];
+
+    private CommandBuilder $commandBuilder;
 
     public function setUp(): void
     {

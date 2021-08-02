@@ -30,7 +30,7 @@ class WaiterSomeDnsRecordsTest extends TestCase
         DebugLib::init();
         $this->yandexApi = new YandexDnsApi(Env::env()->yandexApiDelayMicroseconds);
 
-        // Чтобы тестировать необходимо заполнить settings.json по образцу settings.example.json!
+        // Чтобы тестировать, необходимо заполнить settings.json по образцу settings.example.json!
         $settings = json_decode(file_get_contents(__DIR__ . "/settings.json"), true);
         $this->domain = $settings['domain'];
         $this->token = $settings['token'];
@@ -95,7 +95,7 @@ class WaiterSomeDnsRecordsTest extends TestCase
         $recordsCollection = new DnsRecordsCollection();
         $result = $waiter->waitingSomeParameters($recordsCollection);
 
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 
     public function testOneRecord()

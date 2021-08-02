@@ -8,7 +8,9 @@
         "adminEmail": "admin@it5.su",
         "yandexToken": "jkdfjkjkhjksdfjkgjksdfjkgf",
         "certPath": "/etc/letsencrypt/live/it5.su-se/fullchain.pem",
+        "certPermissions": "0770",
         "privKeyPath": "/etc/letsencrypt/live/it5.su-se/privkey.pem",
+        "privKeyPermissions": "0770",
 
         "criticalRemainingDays": 7,
         "isDryRun": false,

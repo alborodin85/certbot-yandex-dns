@@ -91,46 +91,65 @@ class HttpRequestWrapper
         }, $string);
     }
 
+    public function replaceEndsOfString(string $source): string
+    {
+        $result = $source;
+        $substitute = '##SUBS##';
+        $result = str_replace("\r\n", $substitute, $result);
+        $result = str_replace("\r", $substitute, $result);
+        $result = str_replace("\n", $substitute, $result);
+        $result = str_replace($substitute, "\r\n", $result);
+
+        return $result;
+    }
+
     private function parseResponse(string $response): self
     {
-        $startObjectJsonBody = strpos($response, '{');
-        $startArrayJsonBody = strpos($response, '[');
+        $response = $this->replaceEndsOfString($response);
+        $response = trim($response);
+
+        $startObjectJsonBody = mb_strpos($response, '{');
+        $startArrayJsonBody = mb_strpos($response, '[');
+        $startRNJsonBody = mb_strpos($response, "\r\n\r\n");
 
         if ($startObjectJsonBody === false && $startArrayJsonBody === false) {
-            $startJsonBody = false;
-            $jsonBodyLength = 0;
+            if ($startRNJsonBody === false) {
+                $startJsonBody = false;
+                $jsonBodyLength = 0;
+            } else {
+                $startJsonBody = $startRNJsonBody + 4;
+                $jsonBodyLength = mb_strlen($response) - $startJsonBody + 1;
+            }
         } elseif ($startObjectJsonBody === false && $startArrayJsonBody) {
             $startJsonBody = $startArrayJsonBody;
-            $jsonBodyLength = strrpos($response, ']') - $startJsonBody + 1;
+            $jsonBodyLength = mb_strrpos($response, ']') - $startJsonBody + 1;
         } elseif ($startObjectJsonBody && $startArrayJsonBody === false) {
             $startJsonBody = $startObjectJsonBody;
-            $jsonBodyLength = strrpos($response, '}') - $startJsonBody + 1;
+            $jsonBodyLength = mb_strrpos($response, '}') - $startJsonBody + 1;
         } elseif ($startArrayJsonBody < $startObjectJsonBody) {
             $startJsonBody = $startArrayJsonBody;
-            $jsonBodyLength = strrpos($response, ']') - $startJsonBody + 1;
+            $jsonBodyLength = mb_strrpos($response, ']') - $startJsonBody + 1;
         } else {
             $startJsonBody = $startObjectJsonBody;
-            $jsonBodyLength = strrpos($response, '}') - $startJsonBody + 1;
+            $jsonBodyLength = mb_strrpos($response, '}') - $startJsonBody + 1;
         }
-
         if ($startJsonBody && $jsonBodyLength > 0) {
-            $this->rawHeaders = substr($response, 0, $startJsonBody - 1);
-            $this->rawBody = substr($response, $startJsonBody, $jsonBodyLength);
-            $this->arBody = $this->recursiveDecode($this->rawBody);
+            $this->rawHeaders = mb_substr($response, 0, $startJsonBody - 1);
+            $this->rawBody = mb_substr($response, $startJsonBody, $jsonBodyLength);
+            $decodeResult = $this->recursiveDecode($this->rawBody);
+
+            $this->arBody = is_array($decodeResult) ? $decodeResult : ['SIMPLE_STR' => trim($decodeResult)];
         } else {
-            $endHeaders = mb_strpos($response, "\n\n");
-            if ($endHeaders !== false) {
-                $this->rawHeaders = trim(substr($response, 0, $endHeaders));
-                $this->rawBody = trim(substr($response, $endHeaders, mb_strlen($response)));
-                $this->arBody = [$this->rawBody];
-            } else {
-                $this->rawHeaders = $response;
-                $this->rawBody = '';
-                $this->arBody = [];
-            }
+            $this->rawHeaders = $response;
+            $this->rawBody = '';
+            $this->arBody = [];
         }
 
         $this->arHeaders = $this->parseHeaders($this->rawHeaders);
+
+        $this->rawResponse = trim($response);
+        $this->rawHeaders = trim($this->rawHeaders);
+        $this->rawBody = trim($this->rawBody);
 
         return $this;
     }

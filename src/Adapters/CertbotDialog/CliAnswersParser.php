@@ -2,6 +2,7 @@
 
 namespace It5\Adapters\CertbotDialog;
 
+use It5\DebugLibs\DebugLib;
 use It5\ParametersParser\DomainParametersDto;
 
 class CliAnswersParser
@@ -29,7 +30,7 @@ class CliAnswersParser
 
     public function retrieveDnsParameterValue(string $stringFromCertbotCli, string $dnsParamName): string
     {
-        $pattern = "/with the following value:\s*(\S{35,50})?\s+.*/miu";
+        $pattern = "/with the following value:\s*(\S{35,50})+\s+.*/miu";
 
         $matches = [];
         $result = preg_match_all($pattern, $stringFromCertbotCli, $matches, PREG_PATTERN_ORDER);
@@ -37,21 +38,23 @@ class CliAnswersParser
             throw new CertbotDialogError('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
         }
 
+        DebugLib::dump($matches);
+
         $dnsParamValue = '';
         foreach ($matches[1] as $foundedRow) {
-            if (str_contains($foundedRow, $dnsParamName)) {
-                continue;
-            }
-            if (!$foundedRow) {
-                continue;
-            }
+//            if (str_contains($foundedRow, $dnsParamName)) {
+//                continue;
+//            }
+//            if (!$foundedRow) {
+//                continue;
+//            }
             $dnsParamValue = $foundedRow;
             break;
         }
 
-        if (!$dnsParamValue) {
-            throw new CertbotDialogError('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
-        }
+//        if (!$dnsParamValue) {
+//            throw new CertbotDialogError('Из диалога с CertBot не удалось извлечь значение dns-параметра!');
+//        }
 
         return $dnsParamValue;
     }
@@ -69,7 +72,7 @@ class CliAnswersParser
     {
         $pattern = '/Congratulations! Your certificate and chain have been saved at:\s+(.*?)\s+Your key file has been saved at:\s+(.*?)\s+Your cert will expire on\s*(.*?)\..*/mui';
         $matches = [];
-        $result = preg_match_all($pattern, $stringFromCertbotCli, $matches, PREG_PATTERN_ORDER);
+        preg_match_all($pattern, $stringFromCertbotCli, $matches, PREG_PATTERN_ORDER);
 
         $certPath = trim($matches[1][0] ?? '');
         $privKeyPath = trim($matches[2][0] ?? '');
