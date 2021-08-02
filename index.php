@@ -8,8 +8,8 @@ use It5\CertbotYandexDns;
 
 $parameters = [
     'cliArgv' => $argv,
-    'configAbsolutePath' => __DIR__ . '/settings-it5.team.json',
-    'logAbsolutePath' => __DIR__ . '/app.log',
+    'configAbsolutePath' => 'settings.json',
+    'logAbsolutePath' => 'app.log',
 ];
 
 CertbotYandexDns::singleton(...$parameters)->renewCerts();

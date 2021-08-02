@@ -10,3 +10,4 @@ dev-folder
 domains-settings
 .phpunit.result.cache
 .run
+phar-source
